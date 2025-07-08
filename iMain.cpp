@@ -10,9 +10,12 @@ int ball_y = 300;
 int velocity_y = 0;
 int gravity = 1;
 int thrust = -11;
-int r, g, b;
 int height1 = 120, gap = 150, height2 = 160;
 int wall_x = 600, velocity_wall = -5, delay = 400, velocity_control = 10;
+
+const int pipe_spacing = 300;
+int wall_x1 = 600, wall_x2 = wall_x1 + pipe_spacing, wall_x3 = wall_x1 + 2 * pipe_spacing;
+int wall_y1 = 300, wall_y2 = 290, wall_y3 = 320;
 int coll = 0;
 int home = 1, start = 0, gover = 0, inst = 0;
 int pause = 0;
@@ -24,7 +27,7 @@ static bool passedFirstWall = false;
 static bool passedSecondWall = false;
 bool hsound = true;
 
-Image heli, bg, homepageimage, goimg, insimg, scoredigit[10], final_scorep;
+Image heli, wall, bg, homepageimage, goimg, insimg, scoredigit[10], final_scorep;
 
 void gamelogic();
 void instruction();
@@ -45,16 +48,8 @@ void startpage()
     // loading_bg_&_helicopter
     iShowLoadedImage(0, 0, &bg);
     iShowLoadedImage(ball_x - 20, ball_y - 30, &heli);
-
-    iSetColor(145, 88, 45);
-    // iSetColor(128, 78, 41);
-    //  wall_set01
-    iFilledRectangle(wall_x, height1 + gap, 50, 600 - gap - height1);
-    iFilledRectangle(wall_x, 0, 50, height1);
-
-    // wall_set02
-    iFilledRectangle(wall_x + delay, height2 + gap, 50, 600 - gap - height2);
-    iFilledRectangle(wall_x + delay, 0, 50, height2);
+    iShowLoadedImage(wall_x1, -wall_y1, &wall);
+    iShowLoadedImage(wall_x2, -wall_y2, &wall);
 
     // sneaky_trick
     iSetColor(0, 0, 0);
@@ -63,7 +58,6 @@ void startpage()
     // score_printing
     // iSetColor(240, 0, 0);
     // iText(275, 612, scoreText, GLUT_BITMAP_HELVETICA_18);
-    printScorePicture(score, 275, 606); // Adjust position as needed
 
     // collision_check
     if (coll >= 1 || ball_y + 40 > 600 || ball_y + 5 < 0)
@@ -80,10 +74,13 @@ void startpage()
         velocity_y = 0;
         gravity = 1;
         thrust = -10;
-        height1 = 120;
+
         gap = 150;
-        height2 = 160;
-        wall_x = 600;
+
+        wall_x1 = 600;
+        wall_x2 = wall_x1 + pipe_spacing;
+        wall_y1 = 300;
+        wall_y2 = 290;
         velocity_wall = -5;
         delay = 400;
         coll = 0;
@@ -129,35 +126,37 @@ void gamelogic()
             velocity_wall -= 1;
             velocity_control += 10;
         }
-        wall_x += velocity_wall;
-
+        wall_x1 += velocity_wall;
+        wall_x2 += velocity_wall;
+       
         // colission_detection
         coll = 0;
-        coll += collision(ball_x, ball_y, 70, 40, wall_x, height1 + gap, 50, 600 - gap - height1);
-        coll += collision(ball_x, ball_y, 70, 40, wall_x, 0, 50, height1);
-        coll += collision(ball_x, ball_y, 70, 40, wall_x + delay, height2 + gap, 50, 600 - gap - height2);
-        coll += collision(ball_x, ball_y, 70, 40, wall_x + delay, 0, 50, height2);
+        coll += collision(ball_x, ball_y, 70, 40, wall_x1, 548 - wall_y1 + gap, 50, 600 - gap - 548 + wall_y1);
+        coll += collision(ball_x, ball_y, 70, 40, wall_x1, 0, 50, 553 - wall_y1);
+        coll += collision(ball_x, ball_y, 70, 40, wall_x2, 548 - wall_y2 + gap, 50, 600 - gap - 548 + wall_y2);
+        coll += collision(ball_x, ball_y, 70, 40, wall_x2, 0, 50, 553 - wall_y2);
 
         // scoring_system
         updateScore();
 
         // wall_set_renewal
-        if (wall_x + 50 + delay <= 0)
+        if (wall_x1 + 50 <= 0)
         {
             // wall_1
-            wall_x = 600;
-            height1 = rand() % (400 - 100 + 1) + 100;
-            gap = rand() % (150 - 120 + 1) + 120;
-
-            // wall_2
-            wall_x = 600;
-            delay = rand() % (500 - 250 + 1) + 250;
-            height2 = rand() % (400 - 100 + 1) + 100;
+            wall_x1 = 600;
+            wall_y1 = rand() % (450 - 200 + 1) + 200;
 
             // resetting_score_boolean
             passedFirstWall = false;
             passedSecondWall = false;
         }
+        if (wall_x2 + 50 <= 0)
+        {
+            // wall_2
+            wall_x2 = 600;
+            wall_y2 = rand() % (450 - 200 + 1) + 200;
+        }
+       
     }
 }
 
@@ -166,14 +165,14 @@ void updateScore()
 {
     int ball_right = ball_x + 70;
     // checking_if_it_has_passed_first_wall
-    if (!passedFirstWall && ball_right > wall_x + 50)
+    if (!passedFirstWall && ball_right > wall_x1 + 50)
     {
         score++;
         iPlaySound("assets/sounds/point.wav", false, 20);
         passedFirstWall = true;
     }
     // checking_if_it_has_passed_second_wall
-    if (!passedSecondWall && ball_right > wall_x + delay + 50)
+    if (!passedSecondWall && ball_right > wall_x2 + 50)
     {
         score++;
         iPlaySound("assets/sounds/point.wav", false, 20);
@@ -192,16 +191,18 @@ void iDraw()
     }
     else if (start == 1)
     {
+
+        startpage();
         iSetColor(134, 196, 196);
         iFilledRectangle(0, 600, 600, 40);
-        ;
+        printScorePicture(score, 275, 606); // Adjust position as needed
+
         if (hsound == true)
         {
             bghSound = iPlaySound("assets/sounds/helicopter-sound.wav", true, 100);
             iPauseSound(bgSoundIdx);
             hsound = false;
         }
-        startpage();
     }
     else if (gover == 1)
     {
@@ -368,6 +369,8 @@ void iLoadResources()
 
     // load_other_resources
     iLoadImage(&heli, "assets/images/helisprite.png");
+    iLoadImage(&wall, "assets/images/wallsprite.png");
+
     iLoadImage(&bg, "assets/images/back.png");
     iLoadImage(&homepageimage, "assets/images/homepage.png");
     iLoadImage(&goimg, "assets/images/gameover.png");
