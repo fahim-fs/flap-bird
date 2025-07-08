@@ -55,10 +55,7 @@ void startpage()
     iSetColor(0, 0, 0);
     iFilledRectangle(600, 0, 400, 600);
 
-    // score_printing
-    // iSetColor(240, 0, 0);
-    // iText(275, 612, scoreText, GLUT_BITMAP_HELVETICA_18);
-
+    
     // collision_check
     if (coll >= 1 || ball_y + 40 > 600 || ball_y + 5 < 0)
     {
@@ -148,13 +145,14 @@ void gamelogic()
 
             // resetting_score_boolean
             passedFirstWall = false;
-            passedSecondWall = false;
+           
         }
         if (wall_x2 + 50 <= 0)
         {
             // wall_2
             wall_x2 = 600;
             wall_y2 = rand() % (450 - 200 + 1) + 200;
+             passedSecondWall = false;
         }
     }
 }
