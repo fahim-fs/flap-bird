@@ -128,13 +128,13 @@ void gamelogic()
         }
         wall_x1 += velocity_wall;
         wall_x2 += velocity_wall;
-       
+
         // colission_detection
         coll = 0;
-        coll += collision(ball_x, ball_y, 70, 40, wall_x1, 548 - wall_y1 + gap, 50, 600 - gap - 548 + wall_y1);
-        coll += collision(ball_x, ball_y, 70, 40, wall_x1, 0, 50, 553 - wall_y1);
-        coll += collision(ball_x, ball_y, 70, 40, wall_x2, 548 - wall_y2 + gap, 50, 600 - gap - 548 + wall_y2);
-        coll += collision(ball_x, ball_y, 70, 40, wall_x2, 0, 50, 553 - wall_y2);
+        coll += collision(ball_x, ball_y, 70, 42, wall_x1, 547 - wall_y1 + gap, 50, 600 - gap - 547 + wall_y1);
+        coll += collision(ball_x, ball_y, 70, 42, wall_x1, 0, 50, 553 - wall_y1);
+        coll += collision(ball_x, ball_y, 70, 42, wall_x2, 547 - wall_y2 + gap, 50, 600 - gap - 547 + wall_y2);
+        coll += collision(ball_x, ball_y, 70, 42, wall_x2, 0, 50, 553 - wall_y2);
 
         // scoring_system
         updateScore();
@@ -156,7 +156,6 @@ void gamelogic()
             wall_x2 = 600;
             wall_y2 = rand() % (450 - 200 + 1) + 200;
         }
-       
     }
 }
 
