@@ -14,7 +14,7 @@ int height1 = 120, gap = 150, height2 = 160;
 int wall_x = 600, velocity_wall = -5, delay = 400, velocity_control = 10;
 
 const int pipe_spacing = 300;
-int wall_x1 = 600, wall_x2 = wall_x1 + pipe_spacing, wall_x3 = wall_x1 + 2 * pipe_spacing;
+int wall_x1 = 600, wall_x2 = wall_x1 + pipe_spacing;
 int wall_y1 = 300, wall_y2 = 290, wall_y3 = 320;
 int coll = 0;
 int home = 1, start = 0, gover = 0, inst = 0;
@@ -45,7 +45,7 @@ void startpage()
     // store_score
     sprintf(scoreText, "Score: %d", score);
 
-    // loading_bg_&_helicopter
+    // loading_bg_&_helicopter_wall
     iShowLoadedImage(0, 0, &bg);
     iShowLoadedImage(ball_x - 20, ball_y - 30, &heli);
     iShowLoadedImage(wall_x1, -wall_y1, &wall);
@@ -165,14 +165,14 @@ void updateScore()
     if (!passedFirstWall && ball_right > wall_x1 + 50)
     {
         score++;
-        iPlaySound("assets/sounds/point.wav", false, 20);
+        iPlaySound("assets/sounds/point.mp3", false, 20);
         passedFirstWall = true;
     }
     // checking_if_it_has_passed_second_wall
     if (!passedSecondWall && ball_right > wall_x2 + 50)
     {
         score++;
-        iPlaySound("assets/sounds/point.wav", false, 20);
+        iPlaySound("assets/sounds/point.mp3", false, 20);
         passedSecondWall = true;
     }
 }
@@ -192,11 +192,15 @@ void iDraw()
         startpage();
         iSetColor(134, 196, 196);
         iFilledRectangle(0, 600, 600, 40);
-        printScorePicture(score, 275, 606); // Adjust position as needed
+        printScorePicture(score, 275, 606);
 
+        // helicopter_sound_play
         if (hsound == true)
         {
-            bghSound = iPlaySound("assets/sounds/helicopter-sound.wav", true, 100);
+            if(bghSound == -1 )
+                bghSound = iPlaySound("assets/sounds/helicopter-sound.wav", true, 100);
+            else
+                iResumeSound(bghSound);
             iPauseSound(bgSoundIdx);
             hsound = false;
         }
@@ -214,6 +218,8 @@ void iDraw()
     }
     else if (inst == 1)
     {
+        iSetColor(134, 196, 196);
+        iFilledRectangle(0, 600, 600, 40);
         iShowLoadedImage(0, 0, &insimg);
     }
 }
@@ -267,9 +273,10 @@ void iMouse(int button, int state, int mx, int my)
             passedFirstWall = false;
             passedSecondWall = false;
             gover = 0;
+            hsound = true;
             start = 1;
             score = 0;
-            hsound = true;
+            
         }
         else if (gover == 1 && (mx > 177 && mx < 421) && (my > 148 && my < 202))
         {
@@ -319,7 +326,7 @@ void printScorePicture(int score, int x, int y)
     function iKeyboard() is called whenever the user hits a key in keyboard.
     key- holds the ASCII value of the key pressed.
 */
-void iKeyboard(unsigned char key)
+void iKeyboard(unsigned char key, int state)
 {
     if (key == 'p' && start == 1 && pause == 0)
     {
@@ -344,7 +351,7 @@ void iKeyboard(unsigned char key)
     GLUT_KEY_LEFT, GLUT_KEY_UP, GLUT_KEY_RIGHT, GLUT_KEY_DOWN, GLUT_KEY_PAGE UP,
     GLUT_KEY_PAGE DOWN, GLUT_KEY_HOME, GLUT_KEY_END, GLUT_KEY_INSERT
 */
-void iSpecialKeyboard(unsigned char key)
+void iSpecialKeyboard(unsigned char key, int state)
 {
 
     if (key == GLUT_KEY_END)
@@ -389,6 +396,6 @@ int main(int argc, char *argv[])
 
     iSetTimer(22, gamelogic);
 
-    iInitialize(600, 640, "Ball Escape");
+    iOpenWindow(600, 640, "Ball Escape");
     return 0;
 }
