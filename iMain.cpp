@@ -3,6 +3,7 @@
 #include "iSound.h"
 using namespace std;
 
+
 int bgSoundIdx = -1, bghSound = -1;
 int diesound = -1;
 int ball_x = 300;
@@ -27,6 +28,16 @@ static bool passedFirstWall = false;
 static bool passedSecondWall = false;
 bool hsound = true;
 
+#define NAME_LEN 100
+#define MAX_PLAYERS 100
+#define FILE_NAME "leaderboard.txt"
+
+char playerName[NAME_LEN] = "";
+int nameLength = 0;
+bool enteringName = true;
+bool nameSubmitted = false;
+int finalscore = 0; // set this before name entry screen
+
 Image heli, wall, bg, homepageimage, goimg, insimg, scoredigit[10], final_scorep;
 
 void gamelogic();
@@ -34,6 +45,7 @@ void instruction();
 void updateScore();
 void resetGame();
 void printScorePicture(int score, int x, int y);
+void leaderboardSystem(int newScore, char name[]);
 
 void homepage()
 {
@@ -55,7 +67,6 @@ void startpage()
     iSetColor(0, 0, 0);
     iFilledRectangle(600, 0, 400, 600);
 
-    
     // collision_check
     if (coll >= 1 || ball_y + 40 > 600 || ball_y + 5 < 0)
     {
@@ -65,6 +76,13 @@ void startpage()
 
         // resetting_variables
         gover = 1;
+
+        finalscore = score; // your score variable
+        enteringName = true;
+        nameSubmitted = false;
+        nameLength = 0;
+        playerName[0] = '\0';
+
         start = 0;
         ball_x = 300;
         ball_y = 300;
@@ -145,14 +163,13 @@ void gamelogic()
 
             // resetting_score_boolean
             passedFirstWall = false;
-           
         }
         if (wall_x2 + 50 <= 0)
         {
             // wall_2
             wall_x2 = 600;
             wall_y2 = rand() % (450 - 200 + 1) + 200;
-             passedSecondWall = false;
+            passedSecondWall = false;
         }
     }
 }
@@ -177,6 +194,68 @@ void updateScore()
     }
 }
 
+void leaderboardSystem(int newScore, char name[])
+{
+    char names[MAX_PLAYERS][NAME_LEN];
+    int scores[MAX_PLAYERS];
+    int count = 0;
+
+    FILE *fp = fopen(FILE_NAME, "r");
+    if (fp != NULL)
+    {
+        while (fscanf(fp, "%s %d", names[count], &scores[count]) == 2)
+        {
+            count++;
+            if (count >= MAX_PLAYERS)
+                break;
+        }
+        fclose(fp);
+    }
+
+    if (count < MAX_PLAYERS)
+    {
+        strcpy(names[count], name);
+        scores[count] = newScore;
+        count++;
+    }
+
+    // sort descending
+    for (int i = 0; i < count - 1; i++)
+    {
+        for (int j = i + 1; j < count; j++)
+        {
+            if (scores[j] > scores[i])
+            {
+                int t = scores[i];
+                scores[i] = scores[j];
+                scores[j] = t;
+                char temp[NAME_LEN];
+                strcpy(temp, names[i]);
+                strcpy(names[i], names[j]);
+                strcpy(names[j], temp);
+            }
+        }
+    }
+
+    // write back to file
+    fp = fopen(FILE_NAME, "w");
+    if (fp != NULL)
+    {
+        for (int i = 0; i < count; i++)
+        {
+            fprintf(fp, "%s %d\n", names[i], scores[i]);
+        }
+        fclose(fp);
+    }
+
+    // show top 5 in console
+    printf("\n==== LEADERBOARD ====\n");
+    for (int i = 0; i < count && i < 5; i++)
+    {
+        printf("%d. %s - %d\n", i + 1, names[i], scores[i]);
+    }
+}
+
 void iDraw()
 {
     iClear();
@@ -197,7 +276,7 @@ void iDraw()
         // helicopter_sound_play
         if (hsound == true)
         {
-            if(bghSound == -1 )
+            if (bghSound == -1)
                 bghSound = iPlaySound("assets/sounds/helicopter-sound.wav", true, 100);
             else
                 iResumeSound(bghSound);
@@ -214,6 +293,20 @@ void iDraw()
         if (hsound == false)
         {
             iResumeSound(bgSoundIdx);
+        }
+
+        // Draw input box
+        iSetColor(200, 200, 200);
+        iRectangle(100, 100, 300, 40);
+        iSetColor(0, 0, 0);
+        iText(110, 115, playerName, GLUT_BITMAP_HELVETICA_18);
+        
+       
+        
+
+        if (enteringName && !nameSubmitted)
+        {
+            iText(100, 160, "Enter your name and press ENTER", GLUT_BITMAP_HELVETICA_18);
         }
     }
     else if (inst == 1)
@@ -276,7 +369,6 @@ void iMouse(int button, int state, int mx, int my)
             hsound = true;
             start = 1;
             score = 0;
-            
         }
         else if (gover == 1 && (mx > 177 && mx < 421) && (my > 148 && my < 202))
         {
@@ -294,6 +386,14 @@ void iMouse(int button, int state, int mx, int my)
             home = 1;
             inst = 0;
         }
+            if (gover == 1 && mx >= 100 && mx <= 400 && my >= 100 && my <= 140)
+            {
+                enteringName = true;
+            }
+            else
+            {
+                enteringName = false;
+            }
     }
     if (start == 1 && pause == 0 && button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN)
     {
@@ -326,8 +426,34 @@ void printScorePicture(int score, int x, int y)
     function iKeyboard() is called whenever the user hits a key in keyboard.
     key- holds the ASCII value of the key pressed.
 */
-void iKeyboard(unsigned char key, int state)
+void iKeyboard(unsigned char key,int state)
 {
+    if (gover == 1 && state==GLUT_DOWN)
+    {
+        if (enteringName && !nameSubmitted)
+        {
+            if (key == '\r')
+            { // ENTER key
+                nameSubmitted = true;
+                enteringName = false;
+                leaderboardSystem(finalscore, playerName); // Call leaderboard after name entered
+            }
+            else if (key == '\b')
+            { // BACKSPACE
+                if (nameLength > 0)
+                {
+                    nameLength--;
+                    playerName[nameLength] = '\0';
+                }
+            }
+            else if (key >= 32 && key <= 126 && nameLength < NAME_LEN - 1)
+            {
+                playerName[nameLength++] = key;
+                playerName[nameLength] = '\0';
+            }
+        }
+    }
+
     if (key == 'p' && start == 1 && pause == 0)
     {
         iPauseTimer(0);
@@ -342,8 +468,10 @@ void iKeyboard(unsigned char key, int state)
     // place your codes for other keys here
 }
 
+
+
 /*
-    function iSpecialKeyboard() is called whenver user hits special keys like-
+    functionv iSpeocialKeyiboardd() i s called whenver user hits special keys like-
     function keys, home, end, pg up, pg down, arraows etc. you have to use
     appropriate constants to detect them. A list is:
     GLUT_KEY_F1, GLUT_KEY_F2, GLUT_KEY_F3, GLUT_KEY_F4, GLUT_KEY_F5, GLUT_KEY_F6,
