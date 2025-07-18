@@ -1,8 +1,8 @@
 #include "iGraphics.h"
 #include <iostream>
+#include "iFont.h"
 #include "iSound.h"
 using namespace std;
-
 
 int bgSoundIdx = -1, bghSound = -1;
 int diesound = -1;
@@ -36,9 +36,10 @@ char playerName[NAME_LEN] = "";
 int nameLength = 0;
 bool enteringName = true;
 bool nameSubmitted = false;
+bool name_field = false;
 int finalscore = 0; // set this before name entry screen
 
-Image heli, wall, bg, homepageimage, goimg, insimg, scoredigit[10], final_scorep;
+Image heli, wall, bg, homepageimage, goimg, insimg, scoredigit[10], final_scorep, enter_name;
 
 void gamelogic();
 void instruction();
@@ -75,9 +76,9 @@ void startpage()
         iPauseSound(bghSound);
 
         // resetting_variables
-        gover = 1;
+        name_field = true;
 
-        finalscore = score; // your score variable
+        finalscore = score;
         enteringName = true;
         nameSubmitted = false;
         nameLength = 0;
@@ -294,20 +295,12 @@ void iDraw()
         {
             iResumeSound(bgSoundIdx);
         }
-
-        // Draw input box
-        iSetColor(200, 200, 200);
-        iRectangle(100, 100, 300, 40);
+    }
+    else if (name_field == true)
+    {
+        iShowLoadedImage(0, 0, &enter_name);
         iSetColor(0, 0, 0);
-        iText(110, 115, playerName, GLUT_BITMAP_HELVETICA_18);
-        
-       
-        
-
-        if (enteringName && !nameSubmitted)
-        {
-            iText(100, 160, "Enter your name and press ENTER", GLUT_BITMAP_HELVETICA_18);
-        }
+        iShowText(40, 295, playerName, "assets/fonts/PixelifySans-Regular.ttf", 32);
     }
     else if (inst == 1)
     {
@@ -361,7 +354,7 @@ void iMouse(int button, int state, int mx, int my)
             passedFirstWall = false;
             passedSecondWall = false;
         }
-        else if (start == 0 && (mx > 175 && mx < 427) && (my > 257 && my < 324))
+        else if (start == 0 && gover == 1 && (mx > 175 && mx < 427) && (my > 257 && my < 324))
         {
             passedFirstWall = false;
             passedSecondWall = false;
@@ -386,7 +379,10 @@ void iMouse(int button, int state, int mx, int my)
             home = 1;
             inst = 0;
         }
-            if (gover == 1 && mx >= 100 && mx <= 400 && my >= 100 && my <= 140)
+        else if (name_field = true && home == 0)
+        {
+
+            if (mx >= 40 && mx <= 575 && my >= 285 && my <= 325)
             {
                 enteringName = true;
             }
@@ -394,6 +390,7 @@ void iMouse(int button, int state, int mx, int my)
             {
                 enteringName = false;
             }
+        }
     }
     if (start == 1 && pause == 0 && button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN)
     {
@@ -426,9 +423,9 @@ void printScorePicture(int score, int x, int y)
     function iKeyboard() is called whenever the user hits a key in keyboard.
     key- holds the ASCII value of the key pressed.
 */
-void iKeyboard(unsigned char key,int state)
+void iKeyboard(unsigned char key, int state)
 {
-    if (gover == 1 && state==GLUT_DOWN)
+    if (name_field == true && state == GLUT_DOWN)
     {
         if (enteringName && !nameSubmitted)
         {
@@ -436,6 +433,8 @@ void iKeyboard(unsigned char key,int state)
             { // ENTER key
                 nameSubmitted = true;
                 enteringName = false;
+                name_field = false;
+                gover = 1;
                 leaderboardSystem(finalscore, playerName); // Call leaderboard after name entered
             }
             else if (key == '\b')
@@ -453,22 +452,7 @@ void iKeyboard(unsigned char key,int state)
             }
         }
     }
-
-    if (key == 'p' && start == 1 && pause == 0)
-    {
-        iPauseTimer(0);
-        pause = 1;
-        // do something with 'q'
-    }
-    if (key == 'r' && start == 1)
-    {
-        iResumeTimer(0);
-        pause = 0;
-    }
-    // place your codes for other keys here
 }
-
-
 
 /*
     functionv iSpeocialKeyiboardd() i s called whenver user hits special keys like-
@@ -508,11 +492,13 @@ void iLoadResources()
     iLoadImage(&goimg, "assets/images/gameover.png");
     iLoadImage(&insimg, "assets/images/instruction.png");
     iLoadImage(&final_scorep, "assets/images/final_score.png");
+    iLoadImage(&enter_name, "assets/images/enterName.png");
 }
 
 int main(int argc, char *argv[])
 {
     glutInit(&argc, argv);
+    iInitializeFont();
     iLoadResources();
     for (int i = 0; i < 10; i++)
     {
