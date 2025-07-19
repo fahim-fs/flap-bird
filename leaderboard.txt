@@ -1,3 +1,11 @@
-auritro 2
-new 2
-auritra 0
+rookie 30
+hello 18
+notanewplayer 13
+pro 9
+noob 6
+4 5
+3 4
+supernoob 3
+1 3
+2 2
+5 2

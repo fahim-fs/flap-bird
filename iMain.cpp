@@ -259,6 +259,38 @@ void leaderboardSystem(int newScore, char name[])
     }
 }
 
+void show_leaderBoard()
+{
+    FILE *file = fopen("leaderboard.txt", "r");
+    if (file == NULL)
+    {
+        return;
+    }
+
+    char name[NAME_LEN];
+    int score;
+    const int x=40;//constant horizontal position
+    int y = 450; // initial vertical position
+
+    int count=0;
+
+    while (fscanf(file, "%s %d", name, &score) == 2)
+    {
+        char displayText[200];
+        char num[5][5]={"1) ","2) ","3) ","4) ","5) "};
+        sprintf(displayText, "%s - %d", name, score);
+        iSetColor(0,0,0);
+    
+        iShowText(x, y,num[count], "assets/fonts/PixelifySans-Regular.ttf", 48); 
+        iShowText(x+50, y, displayText, "assets/fonts/PixelifySans-Regular.ttf", 48); 
+        y -= 100; //change in vertical position
+        count++;
+        if(count>=5) break;
+    }
+
+    fclose(file);
+}
+
 void iDraw()
 {
     iClear();
@@ -313,6 +345,7 @@ void iDraw()
     else if (home == 0 && hscore_pg == 1)
     {
         iShowLoadedImage2(0, 0, &high_Score);
+        show_leaderBoard();
     }
 }
 
