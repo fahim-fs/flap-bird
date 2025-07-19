@@ -4,6 +4,11 @@
 #include "iSound.h"
 using namespace std;
 
+#define NAME_LEN 100
+#define MAX_PLAYERS 100
+#define FILE_NAME "leaderboard.txt"
+
+
 int bgSoundIdx = -1, bghSound = -1;
 int diesound = -1;
 int ball_x = 300;
@@ -18,7 +23,7 @@ const int pipe_spacing = 300;
 int wall_x1 = 600, wall_x2 = wall_x1 + pipe_spacing;
 int wall_y1 = 300, wall_y2 = 290, wall_y3 = 320;
 int coll = 0;
-int home = 1, start = 0, gover = 0, inst = 0;
+int home = 1, start = 0, gover = 0, inst = 0, hscore_pg = 0;
 int pause = 0;
 int score = 0;
 char scoreText[20];
@@ -28,9 +33,6 @@ static bool passedFirstWall = false;
 static bool passedSecondWall = false;
 bool hsound = true;
 
-#define NAME_LEN 100
-#define MAX_PLAYERS 100
-#define FILE_NAME "leaderboard.txt"
 
 char playerName[NAME_LEN] = "";
 int nameLength = 0;
@@ -39,7 +41,7 @@ bool nameSubmitted = false;
 bool name_field = false;
 int finalscore = 0; // set this before name entry screen
 
-Image heli, wall, bg, homepageimage, goimg, insimg, scoredigit[10], final_scorep, enter_name;
+Image heli, wall, bg, homepageimage, goimg, insimg, scoredigit[10], final_scorep, enter_name, high_Score;
 
 void gamelogic();
 void instruction();
@@ -296,7 +298,7 @@ void iDraw()
             iResumeSound(bgSoundIdx);
         }
     }
-    else if (name_field == true)
+    else if (start == 0 && name_field == true)
     {
         iShowLoadedImage(0, 0, &enter_name);
         iSetColor(0, 0, 0);
@@ -308,36 +310,28 @@ void iDraw()
         iFilledRectangle(0, 600, 600, 40);
         iShowLoadedImage(0, 0, &insimg);
     }
+    else if (home == 0 && hscore_pg == 1)
+    {
+        iShowLoadedImage2(0, 0, &high_Score);
+    }
 }
 
 void print_score(int score, int x, int y)
 {
 }
 
-/*
-    function iMouseMove() is called when the user presses and drags the mouse.
-    (mx, my) is the position where the mouse pointer is.
-*/
+
 void iMouseDrag(int mx, int my)
 {
-    // place your codes here
 }
 
-/*
-    function iMouseMove() is called automatically when the mouse pointer is in motion
-*/
 void iMouseMove(int mx, int my)
 {
-    // place your code here
 }
 void iMouseWheel(int dir, int mx, int my)
 {
 }
 
-/*
-    function iMouse() is called when the user presses/releases the mouse.
-    (mx, my) is the position where the mouse pointer is.
-*/
 void iMouse(int button, int state, int mx, int my)
 {
     if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
@@ -379,7 +373,17 @@ void iMouse(int button, int state, int mx, int my)
             home = 1;
             inst = 0;
         }
-        else if (name_field = true && home == 0)
+        else if (home == 1 && (mx > 185 && mx < 415) && (my > 190 && my < 233))
+        {
+            home = 0;
+            hscore_pg = 1;
+        }
+        else if (hscore_pg == 1 && (mx > 16 && mx < 55) && (my > 594 && my < 625))
+        {
+            home = 1;
+            hscore_pg = 0;
+        }
+        else if (name_field == true)
         {
 
             if (mx >= 40 && mx <= 575 && my >= 285 && my <= 325)
@@ -470,7 +474,6 @@ void iSpecialKeyboard(unsigned char key, int state)
     {
         exit(0);
     }
-    // place your codes for other keys here
 }
 
 void iLoadResources()
@@ -493,6 +496,7 @@ void iLoadResources()
     iLoadImage(&insimg, "assets/images/instruction.png");
     iLoadImage(&final_scorep, "assets/images/final_score.png");
     iLoadImage(&enter_name, "assets/images/enterName.png");
+    iLoadImage(&high_Score, "assets/images/leaderboard.png");
 }
 
 int main(int argc, char *argv[])
