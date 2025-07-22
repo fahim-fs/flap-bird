@@ -23,7 +23,7 @@ const int pipe_spacing = 300;
 int wall_x1 = 600, wall_x2 = wall_x1 + pipe_spacing;
 int wall_y1 = 300, wall_y2 = 290, wall_y3 = 320;
 int coll = 0;
-int home = 1, start = 0, gover = 0, inst = 0, hscore_pg = 0, stngs = 0;
+int home = 1, start = 0, gover = 0, inst = 0, hscore_pg = 0;
 int pause = 0;
 int score = 0;
 char scoreText[20];
@@ -31,7 +31,7 @@ char finalScore[20];
 
 static bool passedFirstWall = false;
 static bool passedSecondWall = false;
-bool hsound = true, stopsound = false;
+bool hsound = true;
 
 
 char playerName[NAME_LEN] = "";
@@ -54,15 +54,7 @@ void homepage()
 {
     iShowLoadedImage(0, 0, &homepageimage);
 }
-void settings_page()
-{
-    iSetColor(52, 232, 235);
-    iFilledRectangle(0, 0, 600, 640);
-    iSetColor(255, 0, 17);
-    iShowText(225, 270, "sound on", "assets/fonts/Sixtyfour-Regular-VariableFont_BLED,SCAN.ttf", 25);
-    iSetColor(255, 0, 17);
-    iShowText(225, 220, "sound off", "assets/fonts/Sixtyfour-Regular-VariableFont_BLED,SCAN.ttf", 25);
-}
+
 void startpage()
 {
     // store_score
@@ -82,11 +74,8 @@ void startpage()
     if (coll >= 1 || ball_y + 40 > 600 || ball_y + 5 < 0)
     {
         // playing_die_sound_&_pausing_bgmusic
-        if (stopsound == false)
-        {
-            iPlaySound("assets/sounds/die.wav", false, 50);
-            iPauseSound(bghSound);
-        }
+        iPlaySound("assets/sounds/die.wav", false, 50);
+        iPauseSound(bghSound);
 
         // resetting_variables
         name_field = true;
@@ -196,16 +185,14 @@ void updateScore()
     if (!passedFirstWall && ball_right > wall_x1 + 50)
     {
         score++;
-        if (stopsound == false)
-            iPlaySound("assets/sounds/point.mp3", false, 20);
+        iPlaySound("assets/sounds/point.mp3", false, 20);
         passedFirstWall = true;
     }
     // checking_if_it_has_passed_second_wall
     if (!passedSecondWall && ball_right > wall_x2 + 50)
     {
         score++;
-        if (stopsound == false)
-            iPlaySound("assets/sounds/point.mp3", false, 20);
+        iPlaySound("assets/sounds/point.mp3", false, 20);
         passedSecondWall = true;
     }
 }
@@ -216,7 +203,7 @@ void leaderboardSystem(int newScore, char name[])
     int scores[MAX_PLAYERS];
     int count = 0;
 
-    FILE* fp = fopen(FILE_NAME, "r");
+    FILE *fp = fopen(FILE_NAME, "r");
     if (fp != NULL)
     {
         while (fscanf(fp, "%s %d", names[count], &scores[count]) == 2)
@@ -274,7 +261,7 @@ void leaderboardSystem(int newScore, char name[])
 
 void show_leaderBoard()
 {
-    FILE* file = fopen("leaderboard.txt", "r");
+    FILE *file = fopen("leaderboard.txt", "r");
     if (file == NULL)
     {
         return;
@@ -282,23 +269,23 @@ void show_leaderBoard()
 
     char name[NAME_LEN];
     int score;
-    const int x = 40;//constant horizontal position
+    const int x=40;//constant horizontal position
     int y = 450; // initial vertical position
 
-    int count = 0;
+    int count=0;
 
     while (fscanf(file, "%s %d", name, &score) == 2)
     {
         char displayText[200];
-        char num[5][5] = { "1) ","2) ","3) ","4) ","5) " };
+        char num[5][5]={"1) ","2) ","3) ","4) ","5) "};
         sprintf(displayText, "%s - %d", name, score);
-        iSetColor(0, 0, 0);
-
-        iShowText(x, y, num[count], "assets/fonts/PixelifySans-Regular.ttf", 48);
-        iShowText(x + 50, y, displayText, "assets/fonts/PixelifySans-Regular.ttf", 48);
+        iSetColor(0,0,0);
+    
+        iShowText(x, y,num[count], "assets/fonts/PixelifySans-Regular.ttf", 48); 
+        iShowText(x+50, y, displayText, "assets/fonts/PixelifySans-Regular.ttf", 48); 
         y -= 100; //change in vertical position
         count++;
-        if (count >= 5) break;
+        if(count>=5) break;
     }
 
     fclose(file);
@@ -324,15 +311,12 @@ void iDraw()
         // helicopter_sound_play
         if (hsound == true)
         {
-            if (stopsound == false)
-            {
-                if (bghSound == -1)
-                    bghSound = iPlaySound("assets/sounds/helicopter-sound.wav", true, 100);
-                else
-                    iResumeSound(bghSound);
-                iPauseSound(bgSoundIdx);
-                hsound = false;
-            }
+            if (bghSound == -1)
+                bghSound = iPlaySound("assets/sounds/helicopter-sound.wav", true, 100);
+            else
+                iResumeSound(bghSound);
+            iPauseSound(bgSoundIdx);
+            hsound = false;
         }
     }
     else if (gover == 1)
@@ -341,17 +325,16 @@ void iDraw()
         iFilledRectangle(0, 600, 600, 40);
         iShowLoadedImage(0, 0, &goimg);
         final_Score();
+        if (hsound == false)
+        {
+            iResumeSound(bgSoundIdx);
+        }
     }
     else if (start == 0 && name_field == true)
     {
         iShowLoadedImage(0, 0, &enter_name);
         iSetColor(0, 0, 0);
         iShowText(40, 295, playerName, "assets/fonts/PixelifySans-Regular.ttf", 32);
-        if (hsound == false)
-        {
-            if (stopsound == false)
-                iResumeSound(bgSoundIdx);
-        }
     }
     else if (inst == 1)
     {
@@ -363,10 +346,6 @@ void iDraw()
     {
         iShowLoadedImage2(0, 0, &high_Score);
         show_leaderBoard();
-    }
-    else if (home == 0 && stngs == 1)
-    {
-        settings_page();
     }
 }
 
@@ -390,7 +369,6 @@ void iMouse(int button, int state, int mx, int my)
 {
     if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
     {
-        //printf("%d, %d\n", mx, my);
         if (start == 1)
         {
             velocity_y = thrust;
@@ -408,8 +386,7 @@ void iMouse(int button, int state, int mx, int my)
             passedFirstWall = false;
             passedSecondWall = false;
             gover = 0;
-            if (stopsound == false)
-                hsound = true;
+            hsound = true;
             start = 1;
             score = 0;
         }
@@ -417,8 +394,7 @@ void iMouse(int button, int state, int mx, int my)
         {
             gover = 0;
             home = 1;
-            if (stopsound == false)
-                hsound = true;
+            hsound = true;
         }
         else if (home == 1 && (mx > 185 && mx < 415) && (my > 68 && my < 105))
         {
@@ -439,26 +415,6 @@ void iMouse(int button, int state, int mx, int my)
         {
             home = 1;
             hscore_pg = 0;
-        }
-        else if (home == 1 && (mx > 178 && mx < 420) && (my > 123 && my < 170))
-        {
-            stngs = 1;
-            home = 0;
-        }
-        else if (stngs == 1 && (mx > 16 && mx < 55) && (my > 594 && my < 625))
-        {
-            home = 1;
-            stngs = 0;
-        }
-        else if (stngs == 1 && (mx > 225 && mx < 447) && (my > 220 && my < 242))
-        {
-            stopsound = true;
-            iPauseSound(bgSoundIdx);
-        }
-        else if (stngs == 1 && (mx > 225 && mx < 421) && (my > 270 && my < 286))
-        {
-            stopsound = false;
-            iResumeSound(bgSoundIdx);
         }
         else if (name_field == true)
         {
@@ -576,7 +532,7 @@ void iLoadResources()
     iLoadImage(&high_Score, "assets/images/leaderboard.png");
 }
 
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
     glutInit(&argc, argv);
     iInitializeFont();
@@ -587,8 +543,7 @@ int main(int argc, char* argv[])
     }
     iResizeImage(&final_scorep, 220, 28);
     iInitializeSound();
-    if (stopsound == false)
-        bgSoundIdx = iPlaySound("assets/sounds/bgm1.wav", true);
+    bgSoundIdx = iPlaySound("assets/sounds/bgm1.wav", true);
 
     iSetTimer(22, gamelogic);
 
