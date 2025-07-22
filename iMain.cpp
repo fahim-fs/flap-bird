@@ -270,7 +270,7 @@ void show_leaderBoard()
     char name[NAME_LEN];
     int score;
     const int x=40;//constant horizontal position
-    int y = 450; // initial vertical position
+    int y = 440; // initial vertical position
 
     int count=0;
 
@@ -281,8 +281,8 @@ void show_leaderBoard()
         sprintf(displayText, "%s - %d", name, score);
         iSetColor(0,0,0);
     
-        iShowText(x, y,num[count], "assets/fonts/PixelifySans-Regular.ttf", 48); 
-        iShowText(x+50, y, displayText, "assets/fonts/PixelifySans-Regular.ttf", 48); 
+        iShowText(x, y,num[count], "assets/fonts/PixelifySans-Regular.ttf", 36); 
+        iShowText(x+50, y, displayText, "assets/fonts/PixelifySans-Regular.ttf", 36); 
         y -= 100; //change in vertical position
         count++;
         if(count>=5) break;
@@ -367,6 +367,7 @@ void iMouseWheel(int dir, int mx, int my)
 
 void iMouse(int button, int state, int mx, int my)
 {
+  
     if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
     {
         if (start == 1)
