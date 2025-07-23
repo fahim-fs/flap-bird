@@ -49,11 +49,18 @@ void updateScore();
 void resetGame();
 void printScorePicture(int score, int x, int y);
 void leaderboardSystem(int newScore, char name[]);
+void settings_page();
+
+void iLoad()
+{
+    
+}
 
 void homepage()
 {
     iShowLoadedImage(0, 0, &homepageimage);
 }
+
 void settings_page()
 {
     iSetColor(52, 232, 235);
@@ -62,6 +69,33 @@ void settings_page()
     iShowText(225, 270, "sound on", "assets/fonts/Sixtyfour-Regular-VariableFont_BLED,SCAN.ttf", 25);
     iSetColor(255, 0, 17);
     iShowText(225, 220, "sound off", "assets/fonts/Sixtyfour-Regular-VariableFont_BLED,SCAN.ttf", 25);
+}
+
+void iInitGame()
+{
+    start = 0;
+    ball_x = 300;
+    ball_y = 300;
+    velocity_y = 0;
+    gravity = 1;
+    thrust = -10;
+
+    gap = 150;
+
+    wall_x1 = 600;
+    wall_x2 = wall_x1 + pipe_spacing;
+    wall_y1 = 300;
+    wall_y2 = 290;
+    velocity_wall = -5;
+    delay = 400;
+    coll = 0;
+
+    finalscore = score;
+    enteringName = true;
+    nameSubmitted = false;
+    nameLength = 0;
+    playerName[0] = '\0';
+    name_field = true;
 }
 void startpage()
 {
@@ -89,30 +123,9 @@ void startpage()
         }
 
         // resetting_variables
-        name_field = true;
-
-        finalscore = score;
-        enteringName = true;
-        nameSubmitted = false;
-        nameLength = 0;
-        playerName[0] = '\0';
-
-        start = 0;
-        ball_x = 300;
-        ball_y = 300;
-        velocity_y = 0;
-        gravity = 1;
-        thrust = -10;
-
-        gap = 150;
-
-        wall_x1 = 600;
-        wall_x2 = wall_x1 + pipe_spacing;
-        wall_y1 = 300;
-        wall_y2 = 290;
-        velocity_wall = -5;
-        delay = 400;
-        coll = 0;
+        
+        
+        iInitGame(); 
     }
 }
 
@@ -347,11 +360,12 @@ void iDraw()
         iShowLoadedImage(0, 0, &enter_name);
         iSetColor(0, 0, 0);
         iShowText(40, 295, playerName, "assets/fonts/PixelifySans-Regular.ttf", 32);
-        if (hsound == false)
+        if (hsound == false);
         {
             if (stopsound == false)
                 iResumeSound(bgSoundIdx);
         }
+        final_Score();
     }
     else if (inst == 1)
     {
@@ -390,7 +404,7 @@ void iMouse(int button, int state, int mx, int my)
 {
     if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
     {
-        //printf("%d, %d\n", mx, my);
+        printf("%d, %d\n", mx, my);
         if (start == 1)
         {
             velocity_y = thrust;
@@ -403,7 +417,7 @@ void iMouse(int button, int state, int mx, int my)
             passedFirstWall = false;
             passedSecondWall = false;
         }
-        else if (start == 0 && gover == 1 && (mx > 175 && mx < 427) && (my > 257 && my < 324))
+        else if (start == 0 && gover == 1 && (mx > 170 && mx < 430) && (my > 225 && my < 315))
         {
             passedFirstWall = false;
             passedSecondWall = false;
@@ -425,7 +439,7 @@ void iMouse(int button, int state, int mx, int my)
             home = 0;
             inst = 1;
         }
-        else if (inst == 1 && (mx > 7 && mx < 55) && (my > 555 && my < 590))
+        else if (inst == 1 && (mx > 10 && mx < 50) && (my > 595 && my < 630))
         {
             home = 1;
             inst = 0;
@@ -435,7 +449,7 @@ void iMouse(int button, int state, int mx, int my)
             home = 0;
             hscore_pg = 1;
         }
-        else if (hscore_pg == 1 && (mx > 16 && mx < 55) && (my > 594 && my < 625))
+        else if (hscore_pg == 1 && (mx > 10 && mx < 62) && (my > 565 && my < 625))
         {
             home = 1;
             hscore_pg = 0;
@@ -506,6 +520,7 @@ void printScorePicture(int score, int x, int y)
 */
 void iKeyboard(unsigned char key, int state)
 {
+    printf("%d\n", key);
     if (name_field == true && state == GLUT_DOWN)
     {
         if (enteringName && !nameSubmitted)
@@ -547,6 +562,7 @@ void iKeyboard(unsigned char key, int state)
 void iSpecialKeyboard(unsigned char key, int state)
 {
 
+    
     if (key == GLUT_KEY_END)
     {
         exit(0);

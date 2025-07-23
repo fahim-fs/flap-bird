@@ -1716,7 +1716,7 @@ void keyboardHandlerUp1FF(unsigned char key, int x, int y)
     redraw();
 }
 
-bool specialKeys[109] = {false};
+bool specialKeys[113] = {false};
 
 bool isSpecialKeyPressed(int key)
 {
