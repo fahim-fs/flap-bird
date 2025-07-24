@@ -22,7 +22,7 @@ const int pipe_spacing = 300;
 int wall_x1 = 600, wall_x2 = wall_x1 + pipe_spacing;
 int wall_y1 = 300, wall_y2 = 290, wall_y3 = 320;
 int coll = 0;
-//variables for page control
+// variables for page control
 int home = 1, start = 0, gover = 0, inst = 0, hscore_pg = 0, stngs = 0, r_g = 0, save_g = 0;
 int pause = 0;
 int score = 0;
@@ -65,20 +65,53 @@ void save_current_game()
     loader_arr[10] = coll;
     loader_arr[11] = score;
 
-    FILE* file;
+    FILE *file;
     file = fopen("output.txt", "w");
-    if (file == NULL) {
+    if (file == NULL)
+    {
         printf("Failed to open file.\n");
         return;
     }
-    for (int i = 0; i < 12; i++) {
+    for (int i = 0; i < 12; i++)
+    {
         fprintf(file, "%d ", loader_arr[i]);
     }
 
     fclose(file);
     return;
 }
+void load_game()
+{
+    int data_hold[15];
+    FILE *file;
 
+    file = fopen("input.txt", "r");
+    if (file == NULL)
+    {
+        printf("File not found.\n");
+        return;
+    }
+
+    for (int i = 0; i < 12; i++)
+    {
+        fscanf(file, "%d", &data_hold[i]);
+    }
+
+    fclose(file);
+
+    ball_x = data_hold[0];
+    ball_y = data_hold[1];
+    velocity_y = data_hold[2];
+    height1 = data_hold[3];
+    gap = data_hold[4];
+    height2 = data_hold[5];
+    wall_x1 = data_hold[6];
+    wall_x2 = data_hold[7];
+    wall_y1 = data_hold[8];
+    wall_y2 = data_hold[9];
+    coll = data_hold[10];
+    score = data_hold[11];
+}
 void homepage()
 {
     iShowLoadedImage(0, 0, &homepageimage);
@@ -263,7 +296,7 @@ void leaderboardSystem(int newScore, char name[])
     int scores[MAX_PLAYERS];
     int count = 0;
 
-    FILE* fp = fopen(FILE_NAME, "r");
+    FILE *fp = fopen(FILE_NAME, "r");
     if (fp != NULL)
     {
         while (fscanf(fp, "%s %d", names[count], &scores[count]) == 2)
@@ -321,7 +354,7 @@ void leaderboardSystem(int newScore, char name[])
 
 void show_leaderBoard()
 {
-    FILE* file = fopen("leaderboard.txt", "r");
+    FILE *file = fopen("leaderboard.txt", "r");
     if (file == NULL)
     {
         return;
@@ -337,7 +370,7 @@ void show_leaderBoard()
     while (fscanf(file, "%s %d", name, &score) == 2)
     {
         char displayText[200];
-        char num[5][5] = { "1) ", "2) ", "3) ", "4) ", "5) " };
+        char num[5][5] = {"1) ", "2) ", "3) ", "4) ", "5) "};
         sprintf(displayText, "%s - %d", name, score);
         iSetColor(0, 0, 0);
 
@@ -458,10 +491,18 @@ void iMouse(int button, int state, int mx, int my)
         }
         else if (r_g == 1 && start == 0 && (mx > 170 && mx < 440) && (my > 220 && my < 310))
         {
-            printf("1\n");
             r_g = 0;
+            iInitGame();
             start = 1;
             score = 0;
+            passedFirstWall = false;
+            passedSecondWall = false;
+        }
+        else if (r_g == 1 && start == 0 && (mx > 170 && mx < 440) && (my > 125 && my < 190))
+        {
+            r_g = 0;
+            load_game();
+            start = 1;
             passedFirstWall = false;
             passedSecondWall = false;
         }
@@ -661,7 +702,7 @@ void iLoadResources()
     iLoadImage(&r_game, "assets/images/reloadgame.png");
 }
 
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
     glutInit(&argc, argv);
     iInitializeFont();
