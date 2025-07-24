@@ -11,3 +11,5 @@ fgf 4
 vhy 4
 gug\ 4
 est 2
+test2 2
+hello 1

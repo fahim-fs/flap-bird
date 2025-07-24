@@ -390,8 +390,7 @@ void iDraw()
     iClear();
     if (home == 1)
     {
-        iSetColor(134, 196, 196);
-        iFilledRectangle(0, 600, 600, 40);
+        
         homepage();
     }
     else if (start == 1)
