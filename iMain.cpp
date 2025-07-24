@@ -74,8 +74,6 @@ void save_current_game()
     for (int i = 0; i < 12; i++) {
         fprintf(file, "%d ", loader_arr[i]);
     }
-
-
 }
 
 void homepage()
@@ -101,8 +99,8 @@ void settings_page()
 void save_page()
 {
     iSetColor(0, 250, 0);
-    iShowText(200, 200, "Save game", "assets/fonts/PixelifySans-Regular.ttf");
-
+    iShowText(200, 200, "save & quit", "assets/fonts/PixelifySans-Regular.ttf");
+    iShowText(16, 595, "back", "assets/fonts/PixelifySans-Regular.ttf", 20);
 }
 
 void iInitGame()
@@ -541,6 +539,15 @@ void iMouse(int button, int state, int mx, int my)
         {
             start = 0;
             save_g = 1;
+        }
+        else if (save_g == 1 && (mx > 16 && mx < 55) && (my > 594 && my < 625))
+        {
+            start = 1;
+            save_g = 0;
+        }
+        else if (save_g == 1 && (mx > 200 && mx < 475) && (my > 200 && my < 235))
+        {
+            save_current_game();
         }
     }
     if (start == 1 && pause == 0 && button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN)
