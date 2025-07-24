@@ -2,6 +2,7 @@
 #include <iostream>
 #include "iFont.h"
 #include "iSound.h"
+#include<windows.h>
 using namespace std;
 
 #define NAME_LEN 100
@@ -40,7 +41,7 @@ bool name_field = false;
 int finalscore = 0; // set this before name entry screen
 
 Image heli, wall, bg, homepageimage, goimg, insimg, scoredigit[10], final_scorep, enter_name, high_Score, settings;
-Image s_on, s_off, r_game;
+Image s_on, s_off, r_game, counter[3];
 
 void gamelogic();
 void updateScore();
@@ -65,7 +66,7 @@ void save_current_game()
     loader_arr[10] = coll;
     loader_arr[11] = score;
 
-    FILE *file;
+    FILE* file;
     file = fopen("output.txt", "w");
     if (file == NULL)
     {
@@ -83,7 +84,7 @@ void save_current_game()
 void load_game()
 {
     int data_hold[15];
-    FILE *file;
+    FILE* file;
 
     file = fopen("output.txt", "r");
     if (file == NULL)
@@ -113,6 +114,7 @@ void load_game()
     score = data_hold[11];
     return;
 }
+
 void homepage()
 {
     iShowLoadedImage(0, 0, &homepageimage);
@@ -159,11 +161,11 @@ void iInitGame()
     delay = 400;
     coll = 0;
 }
+
 void startpage()
 {
     // store_score
     sprintf(scoreText, "Score: %d", score);
-
     // loading_bg_&_helicopter_&_wall
     iShowLoadedImage(0, 0, &bg);
     iShowLoadedImage(ball_x - 20, ball_y - 30, &heli);
@@ -202,10 +204,8 @@ void final_Score()
     iShowLoadedImage(190, 604, &final_scorep);
     char scoreString[10];
     sprintf(scoreString, "%d", score);
-
     int len = strlen(scoreString);
     int digitWidth = 20;
-
     for (int i = 0; i < len; i++)
     {
         int digit = scoreString[i] - '0';
@@ -296,7 +296,7 @@ void leaderboardSystem(int newScore, char name[])
     int scores[MAX_PLAYERS];
     int count = 0;
 
-    FILE *fp = fopen(FILE_NAME, "r");
+    FILE* fp = fopen(FILE_NAME, "r");
     if (fp != NULL)
     {
         while (fscanf(fp, "%s %d", names[count], &scores[count]) == 2)
@@ -354,7 +354,7 @@ void leaderboardSystem(int newScore, char name[])
 
 void show_leaderBoard()
 {
-    FILE *file = fopen("leaderboard.txt", "r");
+    FILE* file = fopen("leaderboard.txt", "r");
     if (file == NULL)
     {
         return;
@@ -370,7 +370,7 @@ void show_leaderBoard()
     while (fscanf(file, "%s %d", name, &score) == 2)
     {
         char displayText[200];
-        char num[5][5] = {"1) ", "2) ", "3) ", "4) ", "5) "};
+        char num[5][5] = { "1) ", "2) ", "3) ", "4) ", "5) " };
         sprintf(displayText, "%s - %d", name, score);
         iSetColor(0, 0, 0);
 
@@ -587,6 +587,8 @@ void iMouse(int button, int state, int mx, int my)
         {
             start = 1;
             save_g = 0;
+            iResumeTimer(1);
+            pause = 0;
         }
         else if (save_g == 1 && (mx > 200 && mx < 475) && (my > 200 && my < 235))
         {
@@ -596,11 +598,15 @@ void iMouse(int button, int state, int mx, int my)
     if (start == 1 && pause == 0 && button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN)
     {
         iPauseTimer(0);
+        start = 0;
+        save_g = 1;
         pause = 1;
     }
-    else if (start == 1 && button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN && pause == 1)
+    else if (save_g == 1 && button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN && pause == 1)
     {
         iResumeTimer(0);
+        start = 1;
+        save_g = 0;
         pause = 0;
     }
 }
@@ -626,7 +632,6 @@ void printScorePicture(int score, int x, int y)
 */
 void iKeyboard(unsigned char key, int state)
 {
-    printf("%d\n", key);
     if (name_field == true && state == GLUT_DOWN)
     {
         if (enteringName && !nameSubmitted)
@@ -652,6 +657,13 @@ void iKeyboard(unsigned char key, int state)
                 playerName[nameLength++] = key;
                 playerName[nameLength] = '\0';
             }
+        }
+    }
+    else if (start == 1 && state == GLUT_DOWN)
+    {
+        if (key == 32)
+        {
+            velocity_y = thrust;
         }
     }
 }
@@ -683,6 +695,12 @@ void iLoadResources()
         sprintf(path, "assets/images/scoredigitset/%d.png", i);
         iLoadImage(&scoredigit[i], path);
     }
+    char path1[10];
+    for (int i = 1; i < 4; i++)
+    {
+        sprintf(path1, "assets/images/scoredigitset/%d.png", i);
+        iLoadImage(&counter[i], path1);
+    }
 
     // load_other_resources
     iLoadImage(&heli, "assets/images/helisprite.png");
@@ -701,7 +719,7 @@ void iLoadResources()
     iLoadImage(&r_game, "assets/images/reloadgame.png");
 }
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
     glutInit(&argc, argv);
     iInitializeFont();
