@@ -31,7 +31,7 @@ char finalScore[20];
 
 static bool passedFirstWall = false;
 static bool passedSecondWall = false;
-bool hsound = true, stopsound = false;
+bool hsound = true, stopsound = false, on_b = true, off_b = false;
 
 
 char playerName[NAME_LEN] = "";
@@ -41,7 +41,8 @@ bool nameSubmitted = false;
 bool name_field = false;
 int finalscore = 0; // set this before name entry screen
 
-Image heli, wall, bg, homepageimage, goimg, insimg, scoredigit[10], final_scorep, enter_name, high_Score;
+Image heli, wall, bg, homepageimage, goimg, insimg, scoredigit[10], final_scorep, enter_name, high_Score, settings;
+Image s_on, s_off;
 
 void gamelogic();
 void instruction();
@@ -53,7 +54,7 @@ void settings_page();
 
 void iLoad()
 {
-    
+
 }
 
 void homepage()
@@ -63,12 +64,17 @@ void homepage()
 
 void settings_page()
 {
-    iSetColor(52, 232, 235);
-    iFilledRectangle(0, 0, 600, 640);
+    iShowLoadedImage(0, 0, &settings);
     iSetColor(255, 0, 17);
-    iShowText(225, 270, "sound on", "assets/fonts/Sixtyfour-Regular-VariableFont_BLED,SCAN.ttf", 25);
-    iSetColor(255, 0, 17);
-    iShowText(225, 220, "sound off", "assets/fonts/Sixtyfour-Regular-VariableFont_BLED,SCAN.ttf", 25);
+    iShowText(90, 300, "BACKGROUND SOUND", "assets/fonts/PixelifySans-Regular.ttf", 35);
+    if (on_b == true)
+    {
+        iShowLoadedImage(415, 295, &s_on);
+    }
+    if (off_b == true)
+    {
+        iShowLoadedImage(415, 295, &s_off);
+    }
 }
 
 void iInitGame()
@@ -123,9 +129,9 @@ void startpage()
         }
 
         // resetting_variables
-        
-        
-        iInitGame(); 
+
+
+        iInitGame();
     }
 }
 
@@ -464,15 +470,20 @@ void iMouse(int button, int state, int mx, int my)
             home = 1;
             stngs = 0;
         }
-        else if (stngs == 1 && (mx > 225 && mx < 447) && (my > 220 && my < 242))
+        else if (stngs == 1 && (mx > 415 && mx < 455) && (my > 290 && my < 320) && on_b == true && off_b == false)
         {
             stopsound = true;
             iPauseSound(bgSoundIdx);
+            on_b = false;
+            off_b = true;
+
         }
-        else if (stngs == 1 && (mx > 225 && mx < 421) && (my > 270 && my < 286))
+        else if (stngs == 1 && (mx > 415 && mx < 455) && (my > 290 && my < 320) && off_b == true && on_b == false)
         {
             stopsound = false;
             iResumeSound(bgSoundIdx);
+            off_b = false;
+            on_b = true;
         }
         else if (name_field == true)
         {
@@ -562,7 +573,7 @@ void iKeyboard(unsigned char key, int state)
 void iSpecialKeyboard(unsigned char key, int state)
 {
 
-    
+
     if (key == GLUT_KEY_END)
     {
         exit(0);
@@ -590,6 +601,9 @@ void iLoadResources()
     iLoadImage(&final_scorep, "assets/images/final_score.png");
     iLoadImage(&enter_name, "assets/images/enterName.png");
     iLoadImage(&high_Score, "assets/images/leaderboard.png");
+    iLoadImage(&settings, "assets/images/settings.png");
+    iLoadImage(&s_on, "assets/images/sound_on.png");
+    iLoadImage(&s_off, "assets/images/sound_off.png");
 }
 
 int main(int argc, char* argv[])
