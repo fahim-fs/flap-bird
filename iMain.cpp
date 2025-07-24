@@ -142,14 +142,14 @@ void settings_page()
 {
     iShowLoadedImage(0, 0, &settings);
     iSetColor(255, 0, 17);
-    iShowText(90, 300, "BACKGROUND SOUND", "assets/fonts/PixelifySans-Regular.ttf", 35);
+    iShowText(120, 300, "BACKGROUND SOUND", "assets/fonts/PixelifySans-Regular.ttf", 35);
     if (on_b == true)
     {
-        iShowLoadedImage(415, 295, &s_on);
+        iShowLoadedImage(445, 295, &s_on);
     }
     if (off_b == true)
     {
-        iShowLoadedImage(415, 295, &s_off);
+        iShowLoadedImage(445, 295, &s_off);
     }
 }
 
@@ -585,14 +585,14 @@ void iMouse(int button, int state, int mx, int my)
             home = 1;
             stngs = 0;
         }
-        else if (stngs == 1 && (mx > 415 && mx < 455) && (my > 290 && my < 320) && on_b == true && off_b == false)
+        else if (stngs == 1 && (mx > 445 && mx < 485) && (my > 290 && my < 320) && on_b == true && off_b == false)
         {
             stopsound = true;
             iPauseSound(bgSoundIdx);
             on_b = false;
             off_b = true;
         }
-        else if (stngs == 1 && (mx > 415 && mx < 455) && (my > 290 && my < 320) && off_b == true && on_b == false)
+        else if (stngs == 1 && (mx > 445 && mx < 485) && (my > 290 && my < 320) && off_b == true && on_b == false)
         {
             stopsound = false;
             iResumeSound(bgSoundIdx);
