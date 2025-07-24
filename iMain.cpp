@@ -436,8 +436,6 @@ void iDraw()
     }
     else if (inst == 1)
     {
-        iSetColor(134, 196, 196);
-        iFilledRectangle(0, 600, 600, 40);
         iShowLoadedImage(0, 0, &insimg);
     }
     else if (home == 0 && hscore_pg == 1)
@@ -476,11 +474,16 @@ void iMouseWheel(int dir, int mx, int my)
 
 void iMouse(int button, int state, int mx, int my)
 {
+   // printf("%d %d\n",mx,my);
     if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
     {
         if (start == 1)
         {
             velocity_y = thrust;
+        }
+        if(home ==1 && (mx > 535 && mx < 580) && (my > 585 && my < 630))
+        {
+            exit(0);
         }
         if (home == 1 && (mx > 185 && mx < 415) && (my > 261 && my < 326))
         {
