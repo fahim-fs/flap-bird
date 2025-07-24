@@ -2,4 +2,4 @@ auritro 48
 Fahim 30
 test 21
 Fahim 20
- 0
+ 6

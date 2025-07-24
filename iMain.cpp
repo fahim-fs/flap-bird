@@ -74,6 +74,9 @@ void save_current_game()
     for (int i = 0; i < 12; i++) {
         fprintf(file, "%d ", loader_arr[i]);
     }
+
+    fclose(file);
+    return;
 }
 
 void homepage()
