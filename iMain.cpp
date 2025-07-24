@@ -45,7 +45,7 @@ bool name_field = false;
 int finalscore = 0; // set this before name entry screen
 
 Image heli, wall, bg, homepageimage, goimg, insimg, scoredigit[10], final_scorep, enter_name, high_Score, settings;
-Image s_on, s_off, r_game, counter[3], resume_page;
+Image s_on, s_off, r_game, count_timer[4], resume_page;
 
 void gamelogic();
 void updateScore();
@@ -142,20 +142,20 @@ void settings_page()
 {
     iShowLoadedImage(0, 0, &settings);
     iSetColor(255, 0, 17);
-    iShowText(90, 300, "BACKGROUND SOUND", "assets/fonts/PixelifySans-Regular.ttf", 35);
+    iShowText(120, 300, "BACKGROUND SOUND", "assets/fonts/PixelifySans-Regular.ttf", 35);
     if (on_b == true)
     {
-        iShowLoadedImage(415, 295, &s_on);
+        iShowLoadedImage(445, 295, &s_on);
     }
     if (off_b == true)
     {
-        iShowLoadedImage(415, 295, &s_off);
+        iShowLoadedImage(445, 295, &s_off);
     }
 }
 
 void Resume_save_page()
 {
-    iShowLoadedImage(0, 0, &resume_page);
+    iShowLoadedImage(100, 100, &count_timer[3]);
 }
 
 void iInitGame()
@@ -187,10 +187,6 @@ void startpage()
     iShowLoadedImage(ball_x - 20, ball_y - 30, &heli);
     iShowLoadedImage(wall_x1, -wall_y1, &wall);
     iShowLoadedImage(wall_x2, -wall_y2, &wall);
-
-    // sneaky_trick
-    iSetColor(0, 0, 0);
-    iFilledRectangle(600, 0, 400, 600);
 
     // collision_check
     if (coll >= 1 || ball_y + 40 > 600 || ball_y + 5 < 0)
@@ -417,7 +413,7 @@ void iDraw()
             startpage();
             iSetTransparentColor(0, 0, 0, 0.5);
             iFilledRectangle(0, 0, 600, 640);
-            iShowLoadedImage(300, 300, &counter[count_num]);
+            iShowLoadedImage(300, 300, &count_timer[count_num]);
         }
         else if (gamelogic_check)
         {
@@ -468,7 +464,7 @@ void iDraw()
     }
     else if (home == 0 && hscore_pg == 1)
     {
-        iShowLoadedImage2(0, 0, &high_Score);
+        iShowLoadedImage(0, 0, &high_Score);
         show_leaderBoard();
     }
     else if (home == 0 && stngs == 1)
@@ -477,9 +473,9 @@ void iDraw()
     }
     else if (start == 0 && r_g == 1)
     {
-        iShowLoadedImage2(0, 0, &r_game);
+        iShowLoadedImage(0, 0, &r_game);
     }
-    else if (save_g == 1)
+    else if (save_g == 1 && start == 0)
     {
         Resume_save_page();
     }
@@ -592,14 +588,14 @@ void iMouse(int button, int state, int mx, int my)
             home = 1;
             stngs = 0;
         }
-        else if (stngs == 1 && (mx > 415 && mx < 455) && (my > 290 && my < 320) && on_b == true && off_b == false)
+        else if (stngs == 1 && (mx > 445 && mx < 485) && (my > 290 && my < 320) && on_b == true && off_b == false)
         {
             stopsound = true;
             iPauseSound(bgSoundIdx);
             on_b = false;
             off_b = true;
         }
-        else if (stngs == 1 && (mx > 415 && mx < 455) && (my > 290 && my < 320) && off_b == true && on_b == false)
+        else if (stngs == 1 && (mx > 445 && mx < 485) && (my > 290 && my < 320) && off_b == true && on_b == false)
         {
             stopsound = false;
             iResumeSound(bgSoundIdx);
@@ -745,11 +741,11 @@ void iLoadResources()
         sprintf(path, "assets/images/scoredigitset/%d.png", i);
         iLoadImage(&scoredigit[i], path);
     }
-    char path1[10];
+    char path1[20];
     for (int i = 1; i < 4; i++)
     {
         sprintf(path1, "assets/images/scoredigitset/%d.png", i);
-        iLoadImage(&counter[i], path1);
+        iLoadImage(&count_timer[i], path1);
     }
 
     // load_other_resources
