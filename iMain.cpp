@@ -188,10 +188,6 @@ void startpage()
     iShowLoadedImage(wall_x1, -wall_y1, &wall);
     iShowLoadedImage(wall_x2, -wall_y2, &wall);
 
-    // sneaky_trick
-    iSetColor(0, 0, 0);
-    iFilledRectangle(600, 0, 400, 600);
-
     // collision_check
     if (coll >= 1 || ball_y + 40 > 600 || ball_y + 5 < 0)
     {
