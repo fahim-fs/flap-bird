@@ -85,7 +85,7 @@ void load_game()
     int data_hold[15];
     FILE *file;
 
-    file = fopen("input.txt", "r");
+    file = fopen("output.txt", "r");
     if (file == NULL)
     {
         printf("File not found.\n");
@@ -111,6 +111,7 @@ void load_game()
     wall_y2 = data_hold[9];
     coll = data_hold[10];
     score = data_hold[11];
+    return;
 }
 void homepage()
 {
@@ -593,6 +594,7 @@ void iMouse(int button, int state, int mx, int my)
         {
             save_current_game();
         }
+       
     }
     if (start == 1 && pause == 0 && button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN)
     {
@@ -604,6 +606,7 @@ void iMouse(int button, int state, int mx, int my)
         iResumeTimer(0);
         pause = 0;
     }
+     printf("%d\n",start);
 }
 
 void printScorePicture(int score, int x, int y)
