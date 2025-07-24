@@ -23,11 +23,11 @@ const int pipe_spacing = 300;
 int wall_x1 = 600, wall_x2 = wall_x1 + pipe_spacing;
 int wall_y1 = 300, wall_y2 = 290, wall_y3 = 320;
 int coll = 0;
-int home = 1, start = 0, gover = 0, inst = 0, hscore_pg = 0, stngs = 0;
+//variables for page control
+int home = 1, start = 0, gover = 0, inst = 0, hscore_pg = 0, stngs = 0, r_g = 0;
 int pause = 0;
 int score = 0;
-char scoreText[20];
-char finalScore[20];
+char scoreText[20], finalScore[20];
 
 static bool passedFirstWall = false;
 static bool passedSecondWall = false;
@@ -42,15 +42,15 @@ bool name_field = false;
 int finalscore = 0; // set this before name entry screen
 
 Image heli, wall, bg, homepageimage, goimg, insimg, scoredigit[10], final_scorep, enter_name, high_Score, settings;
-Image s_on, s_off;
+Image s_on, s_off, r_game;
 
 void gamelogic();
-void instruction();
 void updateScore();
 void resetGame();
 void printScorePicture(int score, int x, int y);
 void leaderboardSystem(int newScore, char name[]);
 void settings_page();
+void reload_game_page();
 
 void iLoad()
 {
@@ -75,6 +75,11 @@ void settings_page()
     {
         iShowLoadedImage(415, 295, &s_off);
     }
+}
+
+void reload_game_page()
+{
+    iShowLoadedImage2(0, 0, &r_game);
 }
 
 void iInitGame()
@@ -334,7 +339,6 @@ void iDraw()
     }
     else if (start == 1)
     {
-
         startpage();
         iSetColor(134, 196, 196);
         iFilledRectangle(0, 600, 600, 40);
@@ -388,6 +392,10 @@ void iDraw()
     {
         settings_page();
     }
+    else if (start == 0 && r_g == 1)
+    {
+        reload_game_page();
+    }
 }
 
 void print_score(int score, int x, int y)
@@ -418,6 +426,12 @@ void iMouse(int button, int state, int mx, int my)
         if (home == 1 && (mx > 185 && mx < 415) && (my > 261 && my < 326))
         {
             home = 0;
+            r_g = 1;
+        }
+        else if (r_g == 1 && start == 0 && (mx > 170 && mx < 440) && (my > 220 && my < 310))
+        {
+            printf("1\n");
+            r_g = 0;
             start = 1;
             score = 0;
             passedFirstWall = false;
@@ -604,6 +618,7 @@ void iLoadResources()
     iLoadImage(&settings, "assets/images/settings.png");
     iLoadImage(&s_on, "assets/images/sound_on.png");
     iLoadImage(&s_off, "assets/images/sound_off.png");
+    iLoadImage(&r_game, "assets/images/reloadgame.png");
 }
 
 int main(int argc, char* argv[])

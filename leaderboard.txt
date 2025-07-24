@@ -1,10 +1,10 @@
 auritro 48
 Fahim 30
 test 21
+Fahim 20
 TEST09 7
-fahim 4
 dihan 4
-dihan 3
+fahim 4
 kj 3
+dihan 3
 dihan 2
- 1
