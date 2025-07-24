@@ -45,7 +45,7 @@ bool name_field = false;
 int finalscore = 0; // set this before name entry screen
 
 Image heli, wall, bg, homepageimage, goimg, insimg, scoredigit[10], final_scorep, enter_name, high_Score, settings;
-Image s_on, s_off, r_game, counter[3], resume_page;
+Image s_on, s_off, r_game, count_timer[4], resume_page;
 
 void gamelogic();
 void updateScore();
@@ -155,7 +155,7 @@ void settings_page()
 
 void Resume_save_page()
 {
-    iShowLoadedImage(0, 0, &resume_page);
+    iShowLoadedImage(100, 100, &count_timer[3]);
 }
 
 void iInitGame()
@@ -417,7 +417,7 @@ void iDraw()
             startpage();
             iSetTransparentColor(0, 0, 0, 0.5);
             iFilledRectangle(0, 0, 600, 640);
-            iShowLoadedImage(300, 300, &counter[count_num]);
+            iShowLoadedImage(300, 300, &count_timer[count_num]);
         }
         else if (gamelogic_check)
         {
@@ -470,7 +470,7 @@ void iDraw()
     }
     else if (home == 0 && hscore_pg == 1)
     {
-        iShowLoadedImage2(0, 0, &high_Score);
+        iShowLoadedImage(0, 0, &high_Score);
         show_leaderBoard();
     }
     else if (home == 0 && stngs == 1)
@@ -479,9 +479,9 @@ void iDraw()
     }
     else if (start == 0 && r_g == 1)
     {
-        iShowLoadedImage2(0, 0, &r_game);
+        iShowLoadedImage(0, 0, &r_game);
     }
-    else if (save_g == 1)
+    else if (save_g == 1 && start == 0)
     {
         Resume_save_page();
     }
@@ -742,11 +742,11 @@ void iLoadResources()
         sprintf(path, "assets/images/scoredigitset/%d.png", i);
         iLoadImage(&scoredigit[i], path);
     }
-    char path1[10];
+    char path1[20];
     for (int i = 1; i < 4; i++)
     {
         sprintf(path1, "assets/images/scoredigitset/%d.png", i);
-        iLoadImage(&counter[i], path1);
+        iLoadImage(&count_timer[i], path1);
     }
 
     // load_other_resources
