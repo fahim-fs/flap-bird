@@ -155,7 +155,7 @@ void settings_page()
 
 void Resume_save_page()
 {
-    iShowLoadedImage(100, 100, &count_timer[3]);
+    iShowLoadedImage(0, 0, &resume_page);
 }
 
 void iInitGame()
@@ -419,8 +419,6 @@ void iDraw()
         {
             iResumeTimer(0);
             startpage();
-            iSetColor(134, 196, 196);
-            iFilledRectangle(0, 600, 600, 40);
             printScorePicture(score, 275, 606);
 
             // helicopter_sound_play
@@ -635,7 +633,8 @@ void iMouse(int button, int state, int mx, int my)
         }
         else if (save_g == 1 && (mx > 180 && mx < 430) && (my > 30 && my < 95))
         {
-            iCloseWindow();
+            save_g = 0;
+            home = 1;
         }
     }
     if (start == 1 && pause == 0 && button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN)
