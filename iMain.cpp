@@ -23,7 +23,7 @@ int wall_x1 = 600, wall_x2 = wall_x1 + pipe_spacing;
 int wall_y1 = 300, wall_y2 = 290, wall_y3 = 320;
 int coll = 0;
 //variables for page control
-int home = 1, start = 0, gover = 0, inst = 0, hscore_pg = 0, stngs = 0, r_g = 0;
+int home = 1, start = 0, gover = 0, inst = 0, hscore_pg = 0, stngs = 0, r_g = 0, save_g = 0;
 int pause = 0;
 int score = 0;
 char scoreText[20], finalScore[20];
@@ -65,17 +65,17 @@ void save_current_game()
     loader_arr[10] = coll;
     loader_arr[11] = score;
 
-    FILE * file;
+    FILE* file;
     file = fopen("output.txt", "w");
     if (file == NULL) {
         printf("Failed to open file.\n");
-        return ;
+        return;
     }
     for (int i = 0; i < 12; i++) {
-        fprintf(file, "%d ", loader_arr[i]);  
+        fprintf(file, "%d ", loader_arr[i]);
     }
 
-    
+
 }
 
 void homepage()
@@ -96,6 +96,13 @@ void settings_page()
     {
         iShowLoadedImage(415, 295, &s_off);
     }
+}
+
+void save_page()
+{
+    iSetColor(0, 250, 0);
+    iShowText(200, 200, "Save game", "assets/fonts/PixelifySans-Regular.ttf");
+
 }
 
 void iInitGame()
@@ -255,7 +262,7 @@ void leaderboardSystem(int newScore, char name[])
     int scores[MAX_PLAYERS];
     int count = 0;
 
-    FILE *fp = fopen(FILE_NAME, "r");
+    FILE* fp = fopen(FILE_NAME, "r");
     if (fp != NULL)
     {
         while (fscanf(fp, "%s %d", names[count], &scores[count]) == 2)
@@ -313,7 +320,7 @@ void leaderboardSystem(int newScore, char name[])
 
 void show_leaderBoard()
 {
-    FILE *file = fopen("leaderboard.txt", "r");
+    FILE* file = fopen("leaderboard.txt", "r");
     if (file == NULL)
     {
         return;
@@ -329,7 +336,7 @@ void show_leaderBoard()
     while (fscanf(file, "%s %d", name, &score) == 2)
     {
         char displayText[200];
-        char num[5][5] = {"1) ", "2) ", "3) ", "4) ", "5) "};
+        char num[5][5] = { "1) ", "2) ", "3) ", "4) ", "5) " };
         sprintf(displayText, "%s - %d", name, score);
         iSetColor(0, 0, 0);
 
@@ -412,6 +419,10 @@ void iDraw()
     else if (start == 0 && r_g == 1)
     {
         iShowLoadedImage2(0, 0, &r_game);
+    }
+    else if (save_g == 1)
+    {
+        save_page();
     }
 }
 
@@ -526,6 +537,11 @@ void iMouse(int button, int state, int mx, int my)
                 enteringName = false;
             }
         }
+        else if (start == 1 && (mx > 525 && mx < 575) && (my > 545 && my < 585))
+        {
+            start = 0;
+            save_g = 1;
+        }
     }
     if (start == 1 && pause == 0 && button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN)
     {
@@ -635,7 +651,7 @@ void iLoadResources()
     iLoadImage(&r_game, "assets/images/reloadgame.png");
 }
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
     glutInit(&argc, argv);
     iInitializeFont();
