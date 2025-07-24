@@ -8,7 +8,6 @@ using namespace std;
 #define MAX_PLAYERS 100
 #define FILE_NAME "leaderboard.txt"
 
-
 int bgSoundIdx = -1, bghSound = -1;
 int diesound = -1;
 int ball_x = 300;
@@ -33,7 +32,6 @@ static bool passedFirstWall = false;
 static bool passedSecondWall = false;
 bool hsound = true, stopsound = false, on_b = true, off_b = false;
 
-
 char playerName[NAME_LEN] = "";
 int nameLength = 0;
 bool enteringName = true;
@@ -51,9 +49,33 @@ void printScorePicture(int score, int x, int y);
 void leaderboardSystem(int newScore, char name[]);
 void settings_page();
 
-void iLoad()
+void save_current_game()
 {
+    int loader_arr[15];
+    loader_arr[0] = ball_x;
+    loader_arr[1] = ball_y;
+    loader_arr[2] = velocity_y;
+    loader_arr[3] = height1;
+    loader_arr[4] = gap;
+    loader_arr[5] = height2;
+    loader_arr[6] = wall_x1;
+    loader_arr[7] = wall_x2;
+    loader_arr[8] = wall_y1;
+    loader_arr[9] = wall_y2;
+    loader_arr[10] = coll;
+    loader_arr[11] = score;
 
+    FILE * file;
+    file = fopen("output.txt", "w");
+    if (file == NULL) {
+        printf("Failed to open file.\n");
+        return ;
+    }
+    for (int i = 0; i < 12; i++) {
+        fprintf(file, "%d ", loader_arr[i]);  
+    }
+
+    
 }
 
 void homepage()
@@ -128,7 +150,6 @@ void startpage()
         }
 
         // resetting_variables
-
 
         iInitGame();
     }
@@ -234,7 +255,7 @@ void leaderboardSystem(int newScore, char name[])
     int scores[MAX_PLAYERS];
     int count = 0;
 
-    FILE* fp = fopen(FILE_NAME, "r");
+    FILE *fp = fopen(FILE_NAME, "r");
     if (fp != NULL)
     {
         while (fscanf(fp, "%s %d", names[count], &scores[count]) == 2)
@@ -292,7 +313,7 @@ void leaderboardSystem(int newScore, char name[])
 
 void show_leaderBoard()
 {
-    FILE* file = fopen("leaderboard.txt", "r");
+    FILE *file = fopen("leaderboard.txt", "r");
     if (file == NULL)
     {
         return;
@@ -300,23 +321,24 @@ void show_leaderBoard()
 
     char name[NAME_LEN];
     int score;
-    const int x = 40;//constant horizontal position
-    int y = 440; // initial vertical position
+    const int x = 40; // constant horizontal position
+    int y = 440;      // initial vertical position
 
     int count = 0;
 
     while (fscanf(file, "%s %d", name, &score) == 2)
     {
         char displayText[200];
-        char num[5][5] = { "1) ","2) ","3) ","4) ","5) " };
+        char num[5][5] = {"1) ", "2) ", "3) ", "4) ", "5) "};
         sprintf(displayText, "%s - %d", name, score);
         iSetColor(0, 0, 0);
 
         iShowText(x, y, num[count], "assets/fonts/PixelifySans-Regular.ttf", 36);
         iShowText(x + 50, y, displayText, "assets/fonts/PixelifySans-Regular.ttf", 36);
-        y -= 100; //change in vertical position
+        y -= 100; // change in vertical position
         count++;
-        if (count >= 5) break;
+        if (count >= 5)
+            break;
     }
 
     fclose(file);
@@ -364,7 +386,8 @@ void iDraw()
         iShowLoadedImage(0, 0, &enter_name);
         iSetColor(0, 0, 0);
         iShowText(40, 295, playerName, "assets/fonts/PixelifySans-Regular.ttf", 32);
-        if (hsound == false);
+        if (hsound == false)
+            ;
         {
             if (stopsound == false)
                 iResumeSound(bgSoundIdx);
@@ -395,7 +418,6 @@ void iDraw()
 void print_score(int score, int x, int y)
 {
 }
-
 
 void iMouseDrag(int mx, int my)
 {
@@ -484,7 +506,6 @@ void iMouse(int button, int state, int mx, int my)
             iPauseSound(bgSoundIdx);
             on_b = false;
             off_b = true;
-
         }
         else if (stngs == 1 && (mx > 415 && mx < 455) && (my > 290 && my < 320) && off_b == true && on_b == false)
         {
@@ -581,7 +602,6 @@ void iKeyboard(unsigned char key, int state)
 void iSpecialKeyboard(unsigned char key, int state)
 {
 
-
     if (key == GLUT_KEY_END)
     {
         exit(0);
@@ -615,7 +635,7 @@ void iLoadResources()
     iLoadImage(&r_game, "assets/images/reloadgame.png");
 }
 
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
     glutInit(&argc, argv);
     iInitializeFont();

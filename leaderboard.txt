@@ -3,8 +3,12 @@ Fahim 30
 test 21
 Fahim 20
 TEST09 7
+<<<<<<< Updated upstream
 dihan 4
 fahim 4
 kj 3
 dihan 3
 dihan 2
+=======
+ 4
+>>>>>>> Stashed changes
