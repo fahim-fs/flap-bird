@@ -780,7 +780,7 @@ int main(int argc, char* argv[])
         bgSoundIdx = iPlaySound("assets/sounds/bgm1.wav", true);
 
     iSetTimer(22, gamelogic);
-    iSetTimer(2000, countDown);
+    iSetTimer(1000, countDown);
 
     iOpenWindow(600, 640, "Ball Escape");
     return 0;
