@@ -50,7 +50,6 @@ void resetGame();
 void printScorePicture(int score, int x, int y);
 void leaderboardSystem(int newScore, char name[]);
 void settings_page();
-void reload_game_page();
 
 void iLoad()
 {
@@ -75,11 +74,6 @@ void settings_page()
     {
         iShowLoadedImage(415, 295, &s_off);
     }
-}
-
-void reload_game_page()
-{
-    iShowLoadedImage2(0, 0, &r_game);
 }
 
 void iInitGame()
@@ -394,7 +388,7 @@ void iDraw()
     }
     else if (start == 0 && r_g == 1)
     {
-        reload_game_page();
+        iShowLoadedImage2(0, 0, &r_game);
     }
 }
 
