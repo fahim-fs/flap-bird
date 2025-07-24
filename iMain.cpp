@@ -158,13 +158,6 @@ void iInitGame()
     velocity_wall = -5;
     delay = 400;
     coll = 0;
-
-    finalscore = score;
-    enteringName = true;
-    nameSubmitted = false;
-    nameLength = 0;
-    playerName[0] = '\0';
-    name_field = true;
 }
 void startpage()
 {
@@ -190,6 +183,12 @@ void startpage()
             iPlaySound("assets/sounds/die.wav", false, 50);
             iPauseSound(bghSound);
         }
+        finalscore = score;
+        enteringName = true;
+        nameSubmitted = false;
+        nameLength = 0;
+        playerName[0] = '\0';
+        name_field = true;
 
         // resetting_variables
 
@@ -480,7 +479,6 @@ void iMouse(int button, int state, int mx, int my)
 {
     if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
     {
-        printf("%d, %d\n", mx, my);
         if (start == 1)
         {
             velocity_y = thrust;
@@ -580,7 +578,7 @@ void iMouse(int button, int state, int mx, int my)
                 enteringName = false;
             }
         }
-        else if (start == 1 && (mx > 525 && mx < 575) && (my > 545 && my < 585))
+        else if (start == 1 && r_g == 0 && (mx > 525 && mx < 575) && (my > 545 && my < 585))
         {
             start = 0;
             save_g = 1;
@@ -594,7 +592,6 @@ void iMouse(int button, int state, int mx, int my)
         {
             save_current_game();
         }
-       
     }
     if (start == 1 && pause == 0 && button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN)
     {
@@ -606,7 +603,6 @@ void iMouse(int button, int state, int mx, int my)
         iResumeTimer(0);
         pause = 0;
     }
-     printf("%d\n",start);
 }
 
 void printScorePicture(int score, int x, int y)
