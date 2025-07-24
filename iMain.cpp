@@ -23,15 +23,19 @@ const int pipe_spacing = 300;
 int wall_x1 = 600, wall_x2 = wall_x1 + pipe_spacing;
 int wall_y1 = 300, wall_y2 = 290, wall_y3 = 320;
 int coll = 0;
+
 // variables for page control
 int home = 1, start = 0, gover = 0, inst = 0, hscore_pg = 0, stngs = 0, r_g = 0, save_g = 0;
 int pause = 0;
 int score = 0;
+int count_num = 3;
 char scoreText[20], finalScore[20];
 
 static bool passedFirstWall = false;
 static bool passedSecondWall = false;
 bool hsound = true, stopsound = false, on_b = true, off_b = false;
+bool count_check = false;
+bool gamelogic_check = false;
 
 char playerName[NAME_LEN] = "";
 int nameLength = 0;
@@ -41,7 +45,7 @@ bool name_field = false;
 int finalscore = 0; // set this before name entry screen
 
 Image heli, wall, bg, homepageimage, goimg, insimg, scoredigit[10], final_scorep, enter_name, high_Score, settings;
-Image s_on, s_off, r_game, counter[3];
+Image s_on, s_off, r_game, counter[3], resume_page;
 
 void gamelogic();
 void updateScore();
@@ -49,6 +53,20 @@ void resetGame();
 void printScorePicture(int score, int x, int y);
 void leaderboardSystem(int newScore, char name[]);
 void settings_page();
+
+void countDown()
+{
+    if (count_check)
+    {
+        count_num--;
+        if (count_num == 0)
+        {
+            count_check = false;
+            gamelogic_check = true;
+        }
+    }
+    return;
+}
 
 void save_current_game()
 {
@@ -135,11 +153,9 @@ void settings_page()
     }
 }
 
-void save_page()
+void Resume_save_page()
 {
-    iSetColor(0, 250, 0);
-    iShowText(200, 200, "save & quit", "assets/fonts/PixelifySans-Regular.ttf");
-    iShowText(16, 595, "back", "assets/fonts/PixelifySans-Regular.ttf", 20);
+    iShowLoadedImage(0, 0, &resume_page);
 }
 
 void iInitGame()
@@ -395,22 +411,34 @@ void iDraw()
     }
     else if (start == 1)
     {
-        startpage();
-        iSetColor(134, 196, 196);
-        iFilledRectangle(0, 600, 600, 40);
-        printScorePicture(score, 275, 606);
-
-        // helicopter_sound_play
-        if (hsound == true)
+        if (count_check)
         {
-            if (stopsound == false)
+            iPauseTimer(0);
+            startpage();
+            iSetTransparentColor(0, 0, 0, 0.5);
+            iFilledRectangle(0, 0, 600, 640);
+            iShowLoadedImage(300, 300, &counter[count_num]);
+        }
+        else if (gamelogic_check)
+        {
+            iResumeTimer(0);
+            startpage();
+            iSetColor(134, 196, 196);
+            iFilledRectangle(0, 600, 600, 40);
+            printScorePicture(score, 275, 606);
+
+            // helicopter_sound_play
+            if (hsound == true)
             {
-                if (bghSound == -1)
-                    bghSound = iPlaySound("assets/sounds/helicopter-sound.wav", true, 100);
-                else
-                    iResumeSound(bghSound);
-                iPauseSound(bgSoundIdx);
-                hsound = false;
+                if (stopsound == false)
+                {
+                    if (bghSound == -1)
+                        bghSound = iPlaySound("assets/sounds/helicopter-sound.wav", true, 100);
+                    else
+                        iResumeSound(bghSound);
+                    iPauseSound(bgSoundIdx);
+                    hsound = false;
+                }
             }
         }
     }
@@ -453,7 +481,7 @@ void iDraw()
     }
     else if (save_g == 1)
     {
-        save_page();
+        Resume_save_page();
     }
 }
 
@@ -477,6 +505,7 @@ void iMouse(int button, int state, int mx, int my)
    // printf("%d %d\n",mx,my);
     if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
     {
+        printf("%d, %d\n", mx, my);
         if (start == 1)
         {
             velocity_y = thrust;
@@ -498,6 +527,9 @@ void iMouse(int button, int state, int mx, int my)
             score = 0;
             passedFirstWall = false;
             passedSecondWall = false;
+            count_check = true;
+            count_num = 3;
+            gamelogic_check = false;
         }
         else if (r_g == 1 && start == 0 && (mx > 170 && mx < 440) && (my > 125 && my < 190))
         {
@@ -506,6 +538,9 @@ void iMouse(int button, int state, int mx, int my)
             start = 1;
             passedFirstWall = false;
             passedSecondWall = false;
+            count_check = true;
+            count_num = 3;
+            gamelogic_check = false;
         }
         else if (start == 0 && gover == 1 && (mx > 170 && mx < 430) && (my > 225 && my < 315))
         {
@@ -516,6 +551,9 @@ void iMouse(int button, int state, int mx, int my)
                 hsound = true;
             start = 1;
             score = 0;
+            count_check = true;
+            count_num = 3;
+            gamelogic_check = false;
         }
         else if (gover == 1 && (mx > 177 && mx < 421) && (my > 148 && my < 202))
         {
@@ -584,17 +622,24 @@ void iMouse(int button, int state, int mx, int my)
         {
             start = 0;
             save_g = 1;
+            count_check = true;
+            count_num = 3;
+            gamelogic_check = false;
         }
-        else if (save_g == 1 && (mx > 16 && mx < 55) && (my > 594 && my < 625))
+        else if (save_g == 1 && (mx > 175 && mx < 435) && (my > 220 && my < 310))
         {
             start = 1;
             save_g = 0;
-            iResumeTimer(1);
+            iResumeTimer(0);
             pause = 0;
         }
-        else if (save_g == 1 && (mx > 200 && mx < 475) && (my > 200 && my < 235))
+        else if (save_g == 1 && (mx > 175 && mx < 435) && (my > 115 && my < 200))
         {
             save_current_game();
+        }
+        else if (save_g == 1 && (mx > 180 && mx < 430) && (my > 30 && my < 95))
+        {
+            iCloseWindow();
         }
     }
     if (start == 1 && pause == 0 && button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN)
@@ -603,6 +648,9 @@ void iMouse(int button, int state, int mx, int my)
         start = 0;
         save_g = 1;
         pause = 1;
+        count_check = true;
+        count_num = 3;
+        gamelogic_check = false;
     }
     else if (save_g == 1 && button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN && pause == 1)
     {
@@ -707,7 +755,6 @@ void iLoadResources()
     // load_other_resources
     iLoadImage(&heli, "assets/images/helisprite.png");
     iLoadImage(&wall, "assets/images/wallsprite.png");
-
     iLoadImage(&bg, "assets/images/back.png");
     iLoadImage(&homepageimage, "assets/images/homepage.png");
     iLoadImage(&goimg, "assets/images/gameover.png");
@@ -719,6 +766,7 @@ void iLoadResources()
     iLoadImage(&s_on, "assets/images/sound_on.png");
     iLoadImage(&s_off, "assets/images/sound_off.png");
     iLoadImage(&r_game, "assets/images/reloadgame.png");
+    iLoadImage(&resume_page, "assets/images/resume_pg.png");
 }
 
 int main(int argc, char* argv[])
@@ -736,6 +784,7 @@ int main(int argc, char* argv[])
         bgSoundIdx = iPlaySound("assets/sounds/bgm1.wav", true);
 
     iSetTimer(22, gamelogic);
+    iSetTimer(2000, countDown);
 
     iOpenWindow(600, 640, "Ball Escape");
     return 0;
