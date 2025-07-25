@@ -207,6 +207,7 @@ void startpage()
         nameLength = 0;
         playerName[0] = '\0';
         name_field = true;
+        enteringName=true;
 
         // resetting_variables
 
@@ -613,18 +614,7 @@ void iMouse(int button, int state, int mx, int my)
             off_b = false;
             on_b = true;
         }
-        else if (name_field == true)
-        {
-
-            if (mx >= 40 && mx <= 575 && my >= 285 && my <= 325)
-            {
-                enteringName = true;
-            }
-            else
-            {
-                enteringName = false;
-            }
-        }
+    
         else if (start == 1 && r_g == 0 && (mx > 525 && mx < 575) && (my > 545 && my < 585))
         {
             start = 0;
