@@ -2,7 +2,7 @@
 #include <iostream>
 #include "iFont.h"
 #include "iSound.h"
-#include<windows.h>
+#include <windows.h>
 using namespace std;
 
 #define NAME_LEN 100
@@ -83,15 +83,17 @@ void save_current_game()
     loader_arr[9] = wall_y2;
     loader_arr[10] = coll;
     loader_arr[11] = score;
+    loader_arr[12] = velocity_wall;
+    loader_arr[13] = velocity_control;
 
-    FILE* file;
+    FILE *file;
     file = fopen("output.txt", "w");
     if (file == NULL)
     {
         printf("Failed to open file.\n");
         return;
     }
-    for (int i = 0; i < 12; i++)
+    for (int i = 0; i < 14; i++)
     {
         fprintf(file, "%d ", loader_arr[i]);
     }
@@ -102,7 +104,7 @@ void save_current_game()
 void load_game()
 {
     int data_hold[15];
-    FILE* file;
+    FILE *file;
 
     file = fopen("output.txt", "r");
     if (file == NULL)
@@ -111,7 +113,7 @@ void load_game()
         return;
     }
 
-    for (int i = 0; i < 12; i++)
+    for (int i = 0; i < 14; i++)
     {
         fscanf(file, "%d", &data_hold[i]);
     }
@@ -130,6 +132,8 @@ void load_game()
     wall_y2 = data_hold[9];
     coll = data_hold[10];
     score = data_hold[11];
+    velocity_wall = data_hold[12];
+    velocity_control = data_hold[13];
     return;
 }
 
@@ -308,7 +312,7 @@ void leaderboardSystem(int newScore, char name[])
     int scores[MAX_PLAYERS];
     int count = 0;
 
-    FILE* fp = fopen(FILE_NAME, "r");
+    FILE *fp = fopen(FILE_NAME, "r");
     if (fp != NULL)
     {
         while (fscanf(fp, "%s %d", names[count], &scores[count]) == 2)
@@ -366,7 +370,7 @@ void leaderboardSystem(int newScore, char name[])
 
 void show_leaderBoard()
 {
-    FILE* file = fopen("leaderboard.txt", "r");
+    FILE *file = fopen("leaderboard.txt", "r");
     if (file == NULL)
     {
         return;
@@ -382,7 +386,7 @@ void show_leaderBoard()
     while (fscanf(file, "%s %d", name, &score) == 2)
     {
         char displayText[200];
-        char num[5][5] = { "1) ", "2) ", "3) ", "4) ", "5) " };
+        char num[5][5] = {"1) ", "2) ", "3) ", "4) ", "5) "};
         sprintf(displayText, "%s - %d", name, score);
         iSetColor(0, 0, 0);
 
@@ -402,7 +406,7 @@ void iDraw()
     iClear();
     if (home == 1)
     {
-        
+
         homepage();
     }
     else if (start == 1)
@@ -496,15 +500,15 @@ void iMouseWheel(int dir, int mx, int my)
 
 void iMouse(int button, int state, int mx, int my)
 {
-   // printf("%d %d\n",mx,my);
+   // printf("%d %d\n", mx, my);
     if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
     {
-        printf("%d, %d\n", mx, my);
+
         if (start == 1)
         {
             velocity_y = thrust;
         }
-        if(home ==1 && (mx > 535 && mx < 580) && (my > 585 && my < 630))
+        if (home == 1 && (mx > 535 && mx < 580) && (my > 585 && my < 630))
         {
             exit(0);
         }
@@ -536,15 +540,22 @@ void iMouse(int button, int state, int mx, int my)
             count_num = 3;
             gamelogic_check = false;
         }
+        else if(r_g==1 && start==0 && (mx > 10 && mx < 45) && (my > 600 && my < 633))
+        {
+            r_g=0;
+            home=1;
+        }
         else if (start == 0 && gover == 1 && (mx > 170 && mx < 430) && (my > 225 && my < 315))
         {
             passedFirstWall = false;
             passedSecondWall = false;
             gover = 0;
+            score = 0;
+
             if (stopsound == false)
                 hsound = true;
             start = 1;
-            score = 0;
+
             count_check = true;
             count_num = 3;
             gamelogic_check = false;
@@ -764,7 +775,7 @@ void iLoadResources()
     iLoadImage(&resume_page, "assets/images/resume_pg.png");
 }
 
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
     glutInit(&argc, argv);
     iInitializeFont();
