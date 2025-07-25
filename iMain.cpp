@@ -402,7 +402,7 @@ void iDraw()
     iClear();
     if (home == 1)
     {
-        
+
         homepage();
     }
     else if (start == 1)
@@ -449,7 +449,6 @@ void iDraw()
         iSetColor(0, 0, 0);
         iShowText(40, 295, playerName, "assets/fonts/PixelifySans-Regular.ttf", 32);
         if (hsound == false)
-            ;
         {
             if (stopsound == false)
                 iResumeSound(bgSoundIdx);
@@ -496,7 +495,7 @@ void iMouseWheel(int dir, int mx, int my)
 
 void iMouse(int button, int state, int mx, int my)
 {
-   // printf("%d %d\n",mx,my);
+    // printf("%d %d\n",mx,my);
     if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
     {
         printf("%d, %d\n", mx, my);
@@ -504,7 +503,7 @@ void iMouse(int button, int state, int mx, int my)
         {
             velocity_y = thrust;
         }
-        if(home ==1 && (mx > 535 && mx < 580) && (my > 585 && my < 630))
+        if (home == 1 && (mx > 535 && mx < 580) && (my > 585 && my < 630))
         {
             exit(0);
         }
@@ -619,6 +618,11 @@ void iMouse(int button, int state, int mx, int my)
             count_check = true;
             count_num = 3;
             gamelogic_check = false;
+            if (stopsound == false)
+            {
+                iPauseSound(bghSound);
+                iResumeSound(bgSoundIdx);
+            }
         }
         else if (save_g == 1 && (mx > 175 && mx < 435) && (my > 220 && my < 310))
         {
@@ -626,6 +630,11 @@ void iMouse(int button, int state, int mx, int my)
             save_g = 0;
             iResumeTimer(0);
             pause = 0;
+            if (stopsound == false)
+            {
+                iResumeSound(bghSound);
+                iPauseSound(bgSoundIdx);
+            }
         }
         else if (save_g == 1 && (mx > 175 && mx < 435) && (my > 115 && my < 200))
         {
@@ -646,6 +655,11 @@ void iMouse(int button, int state, int mx, int my)
         count_check = true;
         count_num = 3;
         gamelogic_check = false;
+        if (stopsound == false)
+        {
+            iPauseSound(bghSound);
+            iResumeSound(bgSoundIdx);
+        }
     }
     else if (save_g == 1 && button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN && pause == 1)
     {
@@ -653,6 +667,11 @@ void iMouse(int button, int state, int mx, int my)
         start = 1;
         save_g = 0;
         pause = 0;
+        if (stopsound == false)
+        {
+            iResumeSound(bghSound);
+            iPauseSound(bgSoundIdx);
+        }
     }
 }
 
