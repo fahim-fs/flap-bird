@@ -307,7 +307,7 @@ void updateScore()
     }
 }
 
-void leaderboardSystem(int newScore, char name[]) 
+void leaderboardSystem(int newScore, char name[])
 {
     char names[MAX_PLAYERS][NAME_LEN];
     int scores[MAX_PLAYERS];
@@ -316,37 +316,23 @@ void leaderboardSystem(int newScore, char name[])
     FILE *fp = fopen(FILE_NAME, "r");
     if (fp != NULL)
     {
-        char line[256];  // temporary buffer for each line
-        while (fgets(line, sizeof(line), fp))
+        while (fscanf(fp, "%s %d", names[count], &scores[count]) == 2)
         {
-            // Remove trailing newline
-            line[strcspn(line, "\n")] = '\0';
-
-            // Find last space before score
-            char *last_space = strrchr(line, ' ');
-            if (last_space != NULL)
-            {
-                *last_space = '\0';  // split name and score
-
-                strncpy(names[count], line, NAME_LEN - 1);
-                names[count][NAME_LEN - 1] = '\0';
-                scores[count] = atoi(last_space + 1);
-
-                count++;
-                if (count >= MAX_PLAYERS - 1)  // reserve space for new score
-                    break;
-            }
+            count++;
+            if (count >= MAX_PLAYERS)
+                break;
         }
         fclose(fp);
     }
 
+    if (count < MAX_PLAYERS)
+    {
+        strcpy(names[count], name);
+        scores[count] = newScore;
+        count++;
+    }
 
-    strncpy(names[count], name, NAME_LEN - 1);
-    names[count][NAME_LEN - 1] = '\0';
-    scores[count] = newScore;
-    count++;
-
-    // Sort descending
+    // sort descending
     for (int i = 0; i < count - 1; i++)
     {
         for (int j = i + 1; j < count; j++)
@@ -364,25 +350,24 @@ void leaderboardSystem(int newScore, char name[])
         }
     }
 
-    // Write back to file
+    // write back to file
     fp = fopen(FILE_NAME, "w");
     if (fp != NULL)
     {
-        for (int i = 0; i < count && i < MAX_PLAYERS; i++)
+        for (int i = 0; i < count; i++)
         {
             fprintf(fp, "%s %d\n", names[i], scores[i]);
         }
         fclose(fp);
     }
 
-    // Show top 5
+    // show top 5 in console
     printf("\n==== LEADERBOARD ====\n");
     for (int i = 0; i < count && i < 5; i++)
     {
         printf("%d. %s - %d\n", i + 1, names[i], scores[i]);
     }
 }
-
 
 void show_leaderBoard()
 {
@@ -392,45 +377,30 @@ void show_leaderBoard()
         return;
     }
 
-    char line[256];
     char name[NAME_LEN];
     int score;
-    const int x = 40;
-    int y = 440;
+    const int x = 40; // constant horizontal position
+    int y = 440;      // initial vertical position
+
     int count = 0;
-    char num[5][5] = {"1) ", "2) ", "3) ", "4) ", "5) "};
 
-    while (fgets(line, sizeof(line), file))
+    while (fscanf(file, "%s %d", name, &score) == 2)
     {
-        
-        line[strcspn(line, "\n")] = '\0';
+        char displayText[200];
+        char num[5][5] = {"1) ", "2) ", "3) ", "4) ", "5) "};
+        sprintf(displayText, "%s - %d", name, score);
+        iSetColor(0, 0, 0);
 
-        
-        char *last_space = strrchr(line, ' ');
-        if (last_space)
-        {
-            *last_space = '\0';
-            score = atoi(last_space + 1);
-            strncpy(name, line, NAME_LEN - 1);
-            name[NAME_LEN - 1] = '\0';
-
-            char displayText[200];
-            sprintf(displayText, "%s - %d", name, score);
-
-            iSetColor(0, 0, 0);
-            iShowText(x, y, num[count], "assets/fonts/PixelifySans-Regular.ttf", 36);
-            iShowText(x + 50, y, displayText, "assets/fonts/PixelifySans-Regular.ttf", 36);
-
-            y -= 100;
-            count++;
-            if (count >= 5)
-                break;
-        }
+        iShowText(x, y, num[count], "assets/fonts/PixelifySans-Regular.ttf", 36);
+        iShowText(x + 50, y, displayText, "assets/fonts/PixelifySans-Regular.ttf", 36);
+        y -= 100; // change in vertical position
+        count++;
+        if (count >= 5)
+            break;
     }
 
     fclose(file);
 }
-
 
 void iDraw()
 {

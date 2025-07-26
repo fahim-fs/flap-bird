@@ -1,15 +1,4 @@
-auritro 48
-me_auritro 42
-gg 32
-hell 18
-rookie 16
-ayr 10
-guy 6
-test 5
-vh 5
-fgf 4
-vhy 4
-gug\ 4
-est 2
-test2 2
-hello 1
+new highscore 22
+ auritro   sarkar 6
+  test 03 3
+  a bc d 2
