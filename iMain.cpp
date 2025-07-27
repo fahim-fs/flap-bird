@@ -25,7 +25,7 @@ int wall_y1 = 300, wall_y2 = 290, wall_y3 = 320;
 int coll = 0;
 
 // variables for page control
-int home = 1, start = 0, gover = 0, inst = 0, hscore_pg = 0, stngs = 0, r_g = 0, save_g = 0;
+int home = 1, start = 0, gover = 0, inst = 0, hscore_pg = 0, stngs = 0, r_g = 0, diff_pg = 0, save_g = 0;
 int pause = 0;
 int score = 0;
 int count_num = 3;
@@ -36,6 +36,9 @@ static bool passedSecondWall = false;
 bool hsound = true, stopsound = false, on_b = true, off_b = false;
 bool count_check = false;
 bool gamelogic_check = false;
+bool r1 = false;
+bool r2 = false;
+bool r3 = false;
 
 char playerName[NAME_LEN] = "";
 int nameLength = 0;
@@ -45,7 +48,7 @@ bool name_field = false;
 int finalscore = 0; // set this before name entry screen
 
 Image heli, wall, bg, homepageimage, goimg, insimg, scoredigit[10], final_scorep, enter_name, high_Score, settings;
-Image s_on, s_off, r_game, count_timer[4], resume_page;
+Image s_on, s_off, r_game, count_timer[4], resume_page, difficulty;
 
 void gamelogic();
 void updateScore();
@@ -207,11 +210,30 @@ void startpage()
         nameLength = 0;
         playerName[0] = '\0';
         name_field = true;
-        enteringName=true;
+        enteringName = true;
 
         // resetting_variables
 
         iInitGame();
+
+        if (r1 == true)
+        {
+            gravity = 1;
+            velocity_wall = -3;
+            velocity_control = 20;
+        }
+        else if (r2 == true)
+        {
+            gravity = 1;
+            velocity_wall = -5;
+            velocity_control = 10;
+        }
+        else
+        {
+            gravity = 1;
+            velocity_wall = -8;
+            velocity_control = 5;
+        }
     }
 }
 
@@ -307,7 +329,7 @@ void updateScore()
     }
 }
 
-void leaderboardSystem(int newScore, char name[]) 
+void leaderboardSystem(int newScore, char name[])
 {
     char names[MAX_PLAYERS][NAME_LEN];
     int scores[MAX_PLAYERS];
@@ -316,7 +338,7 @@ void leaderboardSystem(int newScore, char name[])
     FILE *fp = fopen(FILE_NAME, "r");
     if (fp != NULL)
     {
-        char line[256];  // temporary buffer for each line
+        char line[256]; // temporary buffer for each line
         while (fgets(line, sizeof(line), fp))
         {
             // Remove trailing newline
@@ -326,20 +348,19 @@ void leaderboardSystem(int newScore, char name[])
             char *last_space = strrchr(line, ' ');
             if (last_space != NULL)
             {
-                *last_space = '\0';  // split name and score
+                *last_space = '\0'; // split name and score
 
                 strncpy(names[count], line, NAME_LEN - 1);
                 names[count][NAME_LEN - 1] = '\0';
                 scores[count] = atoi(last_space + 1);
 
                 count++;
-                if (count >= MAX_PLAYERS - 1)  // reserve space for new score
+                if (count >= MAX_PLAYERS - 1) // reserve space for new score
                     break;
             }
         }
         fclose(fp);
     }
-
 
     strncpy(names[count], name, NAME_LEN - 1);
     names[count][NAME_LEN - 1] = '\0';
@@ -383,7 +404,6 @@ void leaderboardSystem(int newScore, char name[])
     }
 }
 
-
 void show_leaderBoard()
 {
     FILE *file = fopen("leaderboard.txt", "r");
@@ -402,10 +422,9 @@ void show_leaderBoard()
 
     while (fgets(line, sizeof(line), file))
     {
-        
+
         line[strcspn(line, "\n")] = '\0';
 
-        
         char *last_space = strrchr(line, ' ');
         if (last_space)
         {
@@ -430,7 +449,6 @@ void show_leaderBoard()
 
     fclose(file);
 }
-
 
 void iDraw()
 {
@@ -507,6 +525,10 @@ void iDraw()
     {
         iShowLoadedImage(0, 0, &r_game);
     }
+    else if (r_g == 0 && diff_pg == 1)
+    {
+        iShowLoadedImage(0, 0, &difficulty);
+    }
     else if (save_g == 1 && start == 0)
     {
         Resume_save_page();
@@ -530,7 +552,7 @@ void iMouseWheel(int dir, int mx, int my)
 
 void iMouse(int button, int state, int mx, int my)
 {
-   // printf("%d %d\n", mx, my);
+    // printf("%d %d\n", mx, my);
 
     // printf("%d %d\n",mx,my);
 
@@ -539,22 +561,43 @@ void iMouse(int button, int state, int mx, int my)
 
         if (start == 1)
         {
+
             velocity_y = thrust;
         }
         if (home == 1 && (mx > 535 && mx < 580) && (my > 585 && my < 630))
         {
+
             exit(0);
         }
         if (home == 1 && (mx > 185 && mx < 415) && (my > 261 && my < 326))
         {
+
             home = 0;
             r_g = 1;
         }
         else if (r_g == 1 && start == 0 && (mx > 170 && mx < 440) && (my > 220 && my < 310))
         {
+
+            // new
             r_g = 0;
+            diff_pg = 1;
+        }
+        else if (r_g == 0 && diff_pg == 1 && (mx > 180 && mx < 430) && (my > 220 && my < 310))
+        {
+
+            // easy
             iInitGame();
+
+            // easy initialization
+            gravity = 1;
+            velocity_wall = -3;
+            velocity_control = 20;
+            r1 = true;
+            r2 = false;
+            r3 = false;
+
             start = 1;
+            diff_pg = 0;
             score = 0;
             passedFirstWall = false;
             passedSecondWall = false;
@@ -562,8 +605,64 @@ void iMouse(int button, int state, int mx, int my)
             count_num = 3;
             gamelogic_check = false;
         }
+        else if (r_g == 0 && diff_pg == 1 && (mx > 180 && mx < 430) && (my > 125 && my < 190))
+        {
+
+            // medium
+            iInitGame();
+
+            // medium initialization
+            gravity = 1;
+            velocity_wall = -5;
+            velocity_control = 10;
+            r2 = true;
+            r1 = false;
+            r3 = false;
+
+            start = 1;
+            diff_pg = 0;
+            score = 0;
+            passedFirstWall = false;
+            passedSecondWall = false;
+            count_check = true;
+            count_num = 3;
+            gamelogic_check = false;
+        }
+        else if (r_g == 0 && diff_pg == 1 && (mx > 180 && mx < 430) && (my > 25 && my < 100))
+        {
+
+            // hard
+            iInitGame();
+
+            // hard initialization
+            gravity = 1;
+            velocity_wall = -8;
+            velocity_control = 5;
+            r3 = true;
+            r2 = false;
+            r1 = false;
+
+            start = 1;
+            diff_pg = 0;
+            score = 0;
+            passedFirstWall = false;
+            passedSecondWall = false;
+            count_check = true;
+            count_num = 3;
+            gamelogic_check = false;
+        }
+        else if (r_g == 0 && diff_pg == 1 && (mx > 12 && mx < 45) && (my > 595 && my < 630))
+        {
+
+            // back to rg
+            diff_pg = 0;
+            r_g = 1;
+        }
+
         else if (r_g == 1 && start == 0 && (mx > 170 && mx < 440) && (my > 125 && my < 190))
         {
+
+            // reload
             r_g = 0;
             load_game();
             start = 1;
@@ -573,13 +672,16 @@ void iMouse(int button, int state, int mx, int my)
             count_num = 3;
             gamelogic_check = false;
         }
-        else if(r_g==1 && start==0 && (mx > 10 && mx < 45) && (my > 600 && my < 633))
+        else if (r_g == 1 && start == 0 && (mx > 10 && mx < 45) && (my > 600 && my < 633))
         {
-            r_g=0;
-            home=1;
+
+            // back
+            r_g = 0;
+            home = 1;
         }
         else if (start == 0 && gover == 1 && (mx > 170 && mx < 430) && (my > 225 && my < 315))
         {
+
             passedFirstWall = false;
             passedSecondWall = false;
             gover = 0;
@@ -595,6 +697,7 @@ void iMouse(int button, int state, int mx, int my)
         }
         else if (gover == 1 && (mx > 177 && mx < 421) && (my > 148 && my < 202))
         {
+
             gover = 0;
             home = 1;
             if (stopsound == false)
@@ -602,6 +705,7 @@ void iMouse(int button, int state, int mx, int my)
         }
         else if (home == 1 && (mx > 185 && mx < 415) && (my > 68 && my < 105))
         {
+
             home = 0;
             inst = 1;
         }
@@ -644,7 +748,7 @@ void iMouse(int button, int state, int mx, int my)
             off_b = false;
             on_b = true;
         }
-    
+
         else if (start == 1 && r_g == 0 && (mx > 525 && mx < 575) && (my > 545 && my < 585))
         {
             start = 0;
@@ -815,6 +919,7 @@ void iLoadResources()
     iLoadImage(&s_off, "assets/images/sound_off.png");
     iLoadImage(&r_game, "assets/images/reloadgame.png");
     iLoadImage(&resume_page, "assets/images/resume_pg.png");
+    iLoadImage(&difficulty, "assets/images/difficulty.png");
 }
 
 int main(int argc, char *argv[])
