@@ -148,7 +148,7 @@ void homepage()
 void settings_page()
 {
     iShowLoadedImage(0, 0, &settings);
-    iSetColor(255, 0, 17);
+    iSetColor(57, 98, 85);
     iShowText(120, 300, "BACKGROUND SOUND", "assets/fonts/PixelifySans-Regular.ttf", 35);
     if (on_b == true)
     {
