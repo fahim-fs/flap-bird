@@ -36,9 +36,9 @@ static bool passedSecondWall = false;
 bool hsound = true, stopsound = false, on_b = true, off_b = false;
 bool count_check = false;
 bool gamelogic_check = false;
-bool r1 = false;
-bool r2 = false;
-bool r3 = false;
+int r1 = false;
+int r2 = false;
+int r3 = false;
 
 char playerName[NAME_LEN] = "";
 int nameLength = 0;
@@ -828,10 +828,7 @@ void printScorePicture(int score, int x, int y)
     }
 }
 
-/*
-    function iKeyboard() is called whenever the user hits a key in keyboard.
-    key- holds the ASCII value of the key pressed.
-*/
+
 void iKeyboard(unsigned char key, int state)
 {
     if (name_field == true && state == GLUT_DOWN)
