@@ -466,7 +466,7 @@ void iDraw()
             startpage();
             iSetTransparentColor(0, 0, 0, 0.5);
             iFilledRectangle(0, 0, 600, 640);
-            iShowLoadedImage(300, 300, &count_timer[count_num]);
+            iShowLoadedImage(285, 285, &count_timer[count_num]);
         }
         else if (gamelogic_check)
         {
@@ -569,7 +569,7 @@ void iMouse(int button, int state, int mx, int my)
 
             exit(0);
         }
-        if (home == 1 && (mx > 185 && mx < 415) && (my > 261 && my < 326))
+        if (home == 1 && (mx > 180 && mx < 420) && (my > 275 && my < 345))
         {
 
             home = 0;
@@ -703,7 +703,7 @@ void iMouse(int button, int state, int mx, int my)
             if (stopsound == false)
                 hsound = true;
         }
-        else if (home == 1 && (mx > 185 && mx < 415) && (my > 68 && my < 105))
+        else if (home == 1 && (mx > 180 && mx < 420) && (my > 65 && my < 110))
         {
 
             home = 0;
@@ -714,7 +714,7 @@ void iMouse(int button, int state, int mx, int my)
             home = 1;
             inst = 0;
         }
-        else if (home == 1 && (mx > 185 && mx < 415) && (my > 190 && my < 233))
+        else if (home == 1 && (mx > 180 && mx < 420) && (my > 200 && my < 255))
         {
             home = 0;
             hscore_pg = 1;
@@ -724,7 +724,7 @@ void iMouse(int button, int state, int mx, int my)
             home = 1;
             hscore_pg = 0;
         }
-        else if (home == 1 && (mx > 178 && mx < 420) && (my > 123 && my < 170))
+        else if (home == 1 && (mx > 180 && mx < 420) && (my > 130 && my < 180))
         {
             stngs = 1;
             home = 0;
