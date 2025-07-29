@@ -36,9 +36,9 @@ static bool passedSecondWall = false;
 bool hsound = true, stopsound = false, on_b = true, off_b = false;
 bool count_check = false;
 bool gamelogic_check = false;
-int r1 = false;
-int r2 = false;
-int r3 = false;
+bool r1 = false;
+bool r2 = false;
+bool r3 = false;
 
 char playerName[NAME_LEN] = "";
 int nameLength = 0;
@@ -89,7 +89,7 @@ void save_current_game()
     loader_arr[12] = velocity_wall;
     loader_arr[13] = velocity_control;
 
-    FILE *file;
+    FILE* file;
     file = fopen("output.txt", "w");
     if (file == NULL)
     {
@@ -107,7 +107,7 @@ void save_current_game()
 void load_game()
 {
     int data_hold[15];
-    FILE *file;
+    FILE* file;
 
     file = fopen("output.txt", "r");
     if (file == NULL)
@@ -148,7 +148,7 @@ void homepage()
 void settings_page()
 {
     iShowLoadedImage(0, 0, &settings);
-    iSetColor(57, 98, 85);
+    iSetColor(55, 94, 82);
     iShowText(120, 300, "BACKGROUND SOUND", "assets/fonts/PixelifySans-Regular.ttf", 35);
     if (on_b == true)
     {
@@ -197,7 +197,7 @@ void startpage()
     iShowLoadedImage(525, 545, &ps_btn);
 
     // collision_check
-    if (coll >= 1 || ball_y + 40 > 600 || ball_y + 5 < 0)
+    if (coll >= 1 || ball_y + 40 > 640 || ball_y + 5 < 0)
     {
         // playing_die_sound_&_pausing_bgmusic
         if (stopsound == false)
@@ -273,17 +273,28 @@ void gamelogic()
         if (score >= velocity_control)
         {
             velocity_wall -= 1;
-            velocity_control += 10;
+            if (r1 == true)
+            {
+                velocity_control +=20;
+            }
+            else if (r2 == true)
+            {
+                velocity_control +=10;
+            }
+            else
+            {
+                velocity_control +=5;
+            }
         }
         wall_x1 += velocity_wall;
         wall_x2 += velocity_wall;
 
         // colission_detection
         coll = 0;
-        coll += collision(ball_x, ball_y, 70, 45, wall_x1, 550 - wall_y1 + gap, 50, 600 - gap - 550 + wall_y1);
-        coll += collision(ball_x, ball_y, 70, 45, wall_x1, 0, 50, 553 - wall_y1);
-        coll += collision(ball_x, ball_y, 70, 45, wall_x2, 550 - wall_y2 + gap, 50, 600 - gap - 550 + wall_y2);
-        coll += collision(ball_x, ball_y, 70, 45, wall_x2, 0, 50, 553 - wall_y2);
+        coll += collision(ball_x, ball_y, 70, 55, wall_x1, 550 - wall_y1 + gap, 50, 600 - gap - 550 + wall_y1);
+        coll += collision(ball_x, ball_y, 70, 55, wall_x1, 0, 50, 553 - wall_y1);
+        coll += collision(ball_x, ball_y, 70, 55, wall_x2, 550 - wall_y2 + gap, 50, 600 - gap - 550 + wall_y2);
+        coll += collision(ball_x, ball_y, 70, 55, wall_x2, 0, 50, 553 - wall_y2);
 
         // scoring_system
         updateScore();
@@ -336,7 +347,7 @@ void leaderboardSystem(int newScore, char name[])
     int scores[MAX_PLAYERS];
     int count = 0;
 
-    FILE *fp = fopen(FILE_NAME, "r");
+    FILE* fp = fopen(FILE_NAME, "r");
     if (fp != NULL)
     {
         char line[256]; // temporary buffer for each line
@@ -346,7 +357,7 @@ void leaderboardSystem(int newScore, char name[])
             line[strcspn(line, "\n")] = '\0';
 
             // Find last space before score
-            char *last_space = strrchr(line, ' ');
+            char* last_space = strrchr(line, ' ');
             if (last_space != NULL)
             {
                 *last_space = '\0'; // split name and score
@@ -407,7 +418,7 @@ void leaderboardSystem(int newScore, char name[])
 
 void show_leaderBoard()
 {
-    FILE *file = fopen("leaderboard.txt", "r");
+    FILE* file = fopen("leaderboard.txt", "r");
     if (file == NULL)
     {
         return;
@@ -419,14 +430,14 @@ void show_leaderBoard()
     const int x = 40;
     int y = 440;
     int count = 0;
-    char num[5][5] = {"1) ", "2) ", "3) ", "4) ", "5) "};
+    char num[5][5] = { "1) ", "2) ", "3) ", "4) ", "5) " };
 
     while (fgets(line, sizeof(line), file))
     {
 
         line[strcspn(line, "\n")] = '\0';
 
-        char *last_space = strrchr(line, ' ');
+        char* last_space = strrchr(line, ' ');
         if (last_space)
         {
             *last_space = '\0';
@@ -559,7 +570,7 @@ void iMouse(int button, int state, int mx, int my)
 {
     // printf("%d %d\n", mx, my);
 
-     printf("%d %d\n",mx,my);
+    // printf("%d %d\n",mx,my);
 
     if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
     {
@@ -594,7 +605,7 @@ void iMouse(int button, int state, int mx, int my)
             iInitGame();
 
             // easy initialization
-            thrust = -10;
+            thrust = -9;
             velocity_wall = -3;
             velocity_control = 20;
             r1 = true;
@@ -724,14 +735,14 @@ void iMouse(int button, int state, int mx, int my)
             home = 0;
             hscore_pg = 1;
         }
-        
+
         else if (hscore_pg == 1 && (mx > 10 && mx < 62) && (my > 565 && my < 625))
         {
             home = 1;
             hscore_pg = 0;
         }
 
-        else if(home == 1 && inst == 0 && (mx > 180 && mx < 420) && (my > 0 && my < 50))
+        else if (home == 1 && inst == 0 && (mx > 180 && mx < 420) && (my > 0 && my < 50))
         {
             home = 0;
             abt_page = 1;
@@ -939,7 +950,7 @@ void iLoadResources()
     iLoadImage(&abt, "assets/images/about.png");
 }
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
     glutInit(&argc, argv);
     iInitializeFont();
