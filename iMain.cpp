@@ -219,19 +219,19 @@ void startpage()
 
         if (r1 == true)
         {
-            gravity = 1;
+            thrust = -10;
             velocity_wall = -3;
             velocity_control = 20;
         }
         else if (r2 == true)
         {
-            gravity = 1;
+
             velocity_wall = -5;
             velocity_control = 10;
         }
         else
         {
-            gravity = 1;
+
             velocity_wall = -8;
             velocity_control = 5;
         }
@@ -590,7 +590,7 @@ void iMouse(int button, int state, int mx, int my)
             iInitGame();
 
             // easy initialization
-            gravity = 1;
+            thrust = -10;
             velocity_wall = -3;
             velocity_control = 20;
             r1 = true;
@@ -613,7 +613,7 @@ void iMouse(int button, int state, int mx, int my)
             iInitGame();
 
             // medium initialization
-            gravity = 1;
+
             velocity_wall = -5;
             velocity_control = 10;
             r2 = true;
@@ -636,7 +636,7 @@ void iMouse(int button, int state, int mx, int my)
             iInitGame();
 
             // hard initialization
-            gravity = 1;
+
             velocity_wall = -8;
             velocity_control = 5;
             r3 = true;
@@ -828,7 +828,6 @@ void printScorePicture(int score, int x, int y)
         iShowLoadedImage(x + i * digitWidth, y, &scoredigit[digit]);
     }
 }
-
 
 void iKeyboard(unsigned char key, int state)
 {
