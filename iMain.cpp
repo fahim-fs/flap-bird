@@ -48,7 +48,7 @@ bool name_field = false;
 int finalscore = 0; // set this before name entry screen
 
 Image heli, wall, bg, homepageimage, goimg, insimg, scoredigit[10], final_scorep, enter_name, high_Score, settings;
-Image s_on, s_off, r_game, count_timer[4], resume_page, difficulty;
+Image s_on, s_off, r_game, count_timer[4], resume_page, difficulty, ps_btn;
 
 void gamelogic();
 void updateScore();
@@ -194,6 +194,7 @@ void startpage()
     iShowLoadedImage(ball_x - 20, ball_y - 30, &heli);
     iShowLoadedImage(wall_x1, -wall_y1, &wall);
     iShowLoadedImage(wall_x2, -wall_y2, &wall);
+    iShowLoadedImage(525, 545, &ps_btn);
 
     // collision_check
     if (coll >= 1 || ball_y + 40 > 600 || ball_y + 5 < 0)
@@ -917,6 +918,7 @@ void iLoadResources()
     iLoadImage(&r_game, "assets/images/reloadgame.png");
     iLoadImage(&resume_page, "assets/images/resume_pg.png");
     iLoadImage(&difficulty, "assets/images/difficulty.png");
+    iLoadImage(&ps_btn, "assets/images/pause_button.png");
 }
 
 int main(int argc, char *argv[])
