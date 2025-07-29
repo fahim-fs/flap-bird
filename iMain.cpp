@@ -25,7 +25,7 @@ int wall_y1 = 300, wall_y2 = 290, wall_y3 = 320;
 int coll = 0;
 
 // variables for page control
-int home = 1, start = 0, gover = 0, inst = 0, hscore_pg = 0, stngs = 0, r_g = 0, diff_pg = 0, save_g = 0;
+int home = 1, start = 0, gover = 0, inst = 0, hscore_pg = 0, stngs = 0, r_g = 0, diff_pg = 0, save_g = 0, abt_page = 0;
 int pause = 0;
 int score = 0;
 int count_num = 3;
@@ -48,7 +48,7 @@ bool name_field = false;
 int finalscore = 0; // set this before name entry screen
 
 Image heli, wall, bg, homepageimage, goimg, insimg, scoredigit[10], final_scorep, enter_name, high_Score, settings;
-Image s_on, s_off, r_game, count_timer[4], resume_page, difficulty, ps_btn;
+Image s_on, s_off, r_game, count_timer[4], resume_page, difficulty, ps_btn, abt;
 
 void gamelogic();
 void updateScore();
@@ -534,6 +534,10 @@ void iDraw()
     {
         Resume_save_page();
     }
+    else if (home == 0 && abt_page == 1)
+    {
+        iShowLoadedImage(0, 0, &abt);
+    }
 }
 
 void print_score(int score, int x, int y)
@@ -555,7 +559,7 @@ void iMouse(int button, int state, int mx, int my)
 {
     // printf("%d %d\n", mx, my);
 
-    // printf("%d %d\n",mx,my);
+     printf("%d %d\n",mx,my);
 
     if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
     {
@@ -720,11 +724,25 @@ void iMouse(int button, int state, int mx, int my)
             home = 0;
             hscore_pg = 1;
         }
+        
         else if (hscore_pg == 1 && (mx > 10 && mx < 62) && (my > 565 && my < 625))
         {
             home = 1;
             hscore_pg = 0;
         }
+
+        else if(home == 1 && inst == 0 && (mx > 180 && mx < 420) && (my > 0 && my < 50))
+        {
+            home = 0;
+            abt_page = 1;
+        }
+
+        else if (abt_page == 1 && (mx > 10 && mx < 62) && (my > 565 && my < 625))
+        {
+            abt_page = 0;
+            home = 1;
+        }
+
         else if (home == 1 && (mx > 180 && mx < 420) && (my > 130 && my < 180))
         {
             stngs = 1;
@@ -918,6 +936,7 @@ void iLoadResources()
     iLoadImage(&resume_page, "assets/images/resume_pg.png");
     iLoadImage(&difficulty, "assets/images/difficulty.png");
     iLoadImage(&ps_btn, "assets/images/pause_button.png");
+    iLoadImage(&abt, "assets/images/about.png");
 }
 
 int main(int argc, char *argv[])
