@@ -737,7 +737,7 @@ void iMouse(int button, int state, int mx, int my)
             abt_page = 1;
         }
 
-        else if (abt_page == 1 && (mx > 10 && mx < 62) && (my > 565 && my < 625))
+        else if (abt_page == 1 && (mx > 10 && mx < 62) && (my > 565 && my < 630))
         {
             abt_page = 0;
             home = 1;
