@@ -57,6 +57,7 @@ A simple Flappy Bird clone written in C using the **iGraphics** and **iSound** l
 ├── leaderboard.txt       # Stores high scores
 ├── assets/               # Contains images and sound files
 ├── screenshots/          # PNG images for README
+├── release/              # contains game exe file 
 └── README.md             # Project description
 ```
 
