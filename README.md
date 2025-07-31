@@ -33,10 +33,10 @@ A simple Flappy Bird clone written in C using the **iGraphics** and **iSound** l
 ![Difficulty Selection](https://github.com/fahim-fs/flap-bird/blob/main/assets/images/difficulty.png)
 
 ### 🕹️ Gameplay
-![Gameplay]()
+![Gameplay](https://github.com/fahim-fs/flap-bird/blob/main/assets/screenshot/gameplay.png)
 
 ### 🏆 Leaderboard
-![Leaderboard]()
+![Leaderboard](https://github.com/fahim-fs/flap-bird/blob/main/assets/screenshot/leaderboard_ss.png)
 
 ---
 
@@ -64,7 +64,8 @@ A simple Flappy Bird clone written in C using the **iGraphics** and **iSound** l
 
 ## ✍️ Credits
 
-Created by **Auritra Sarkar and Fahim Shahriar**  
+Created by **Auritra Sarkar and Fahim Shahriar**   
+Supervised by **Mahir Labib Dihan**  
 Original Flappy Bird concept by **Dong Nguyen**
 
 ---
