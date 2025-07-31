@@ -27,10 +27,10 @@ A simple Flappy Bird clone written in C using the **iGraphics** and **iSound** l
 ## 🖥️ Screenshots
 
 ### 🏠 Main Menu
-![Main Menu](https://raw.githubusercontent.com/auritra/flappybird/main/screenshots/main_menu.png)
+![Main Menu](https://github.com/fahim-fs/flap-bird/blob/main/assets/images/final_score.png)
 
 ### 🎯 Difficulty Selection
-![Difficulty Selection](https://raw.githubusercontent.com/auritra/flappybird/main/screenshots/main_menu.png)
+![Difficulty Selection](https://github.com/fahim-fs/flap-bird/blob/main/assets/images/difficulty.png)
 
 ### 🕹️ Gameplay
 ![Gameplay](https://raw.githubusercontent.com/auritra/flappybird/main/screenshots/main_menu.png)
