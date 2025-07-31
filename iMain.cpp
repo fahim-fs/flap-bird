@@ -407,13 +407,6 @@ void leaderboardSystem(int newScore, char name[])
         }
         fclose(fp);
     }
-
-    // Show top 5
-    printf("\n==== LEADERBOARD ====\n");
-    for (int i = 0; i < count && i < 5; i++)
-    {
-        printf("%d. %s - %d\n", i + 1, names[i], scores[i]);
-    }
 }
 
 void show_leaderBoard()
@@ -503,8 +496,8 @@ void iDraw()
     }
     else if (gover == 1)
     {
-        iSetColor(134, 196, 196);
-        iFilledRectangle(0, 600, 600, 40);
+        // iSetColor(134, 196, 196);
+        // iFilledRectangle(0, 600, 600, 40);
         iShowLoadedImage(0, 0, &goimg);
         final_Score();
     }
@@ -695,7 +688,7 @@ void iMouse(int button, int state, int mx, int my)
             r_g = 0;
             home = 1;
         }
-        else if (start == 0 && gover == 1 && (mx > 170 && mx < 430) && (my > 225 && my < 315))
+        else if (start == 0 && gover == 1 && (mx > 175 && mx < 420) && (my > 250 && my < 322))
         {
 
             passedFirstWall = false;
@@ -711,7 +704,7 @@ void iMouse(int button, int state, int mx, int my)
             count_num = 3;
             gamelogic_check = false;
         }
-        else if (gover == 1 && (mx > 177 && mx < 421) && (my > 148 && my < 202))
+        else if (gover == 1 && (mx > 175 && mx < 425) && (my > 155 && my < 220))
         {
 
             gover = 0;
@@ -867,7 +860,7 @@ void iKeyboard(unsigned char key, int state)
             if (key == '\r')
             { // ENTER key
                 nameSubmitted = true;
-                enteringName = false;
+                enteringName = false; 
                 name_field = false;
                 gover = 1;
                 leaderboardSystem(finalscore, playerName); // Call leaderboard after name entered
@@ -967,6 +960,6 @@ int main(int argc, char* argv[])
     iSetTimer(22, gamelogic);
     iSetTimer(1000, countDown);
 
-    iOpenWindow(600, 640, "Ball Escape");
+    iOpenWindow(600, 640, "HELISCAPE");
     return 0;
 }
