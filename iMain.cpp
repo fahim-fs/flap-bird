@@ -275,15 +275,15 @@ void gamelogic()
             velocity_wall -= 1;
             if (r1 == true)
             {
-                velocity_control +=20;
+                velocity_control += 20;
             }
             else if (r2 == true)
             {
-                velocity_control +=10;
+                velocity_control += 10;
             }
             else
             {
-                velocity_control +=5;
+                velocity_control += 5;
             }
         }
         wall_x1 += velocity_wall;
@@ -467,7 +467,6 @@ void iDraw()
     iClear();
     if (home == 1)
     {
-
         homepage();
     }
     else if (start == 1)
@@ -962,7 +961,7 @@ int main(int argc, char* argv[])
     iResizeImage(&final_scorep, 220, 28);
     iInitializeSound();
     if (stopsound == false)
-        bgSoundIdx = iPlaySound("assets/sounds/bgm1.wav", true);
+        bgSoundIdx = iPlaySound("assets/sounds/bgm1.wav", true, 100);
 
     iSetTimer(22, gamelogic);
     iSetTimer(1000, countDown);
