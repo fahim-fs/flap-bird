@@ -64,7 +64,7 @@ A simple Flappy Bird clone written in C using the **iGraphics** and **iSound** l
 
 ## ✍️ Credits
 
-Created by **Auritra Sarkar and Fahim Shahriar**
+Created by **Auritra Sarkar and Fahim Shahriar**   
 Supervised by **Mahir Labib Dihan**  
 Original Flappy Bird concept by **Dong Nguyen**
 
